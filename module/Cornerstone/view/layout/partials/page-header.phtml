@@ -1,0 +1,6 @@
+<div class="page-title-container row-fluid">
+  <h1 class="page-title"><?php echo $this->title; ?></h1>
+	<div id="breadcrumbs">
+	  <?php echo $this->navigation('Site\Navigation')->breadcrumbs()->setMinDepth(0)->setLinkLast(true)->setSeparator(" &raquo;"); ?>
+	</div>
+</div>

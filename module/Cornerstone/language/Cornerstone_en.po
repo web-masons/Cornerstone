@@ -1,0 +1,123 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Cornerstone\n"
+"POT-Creation-Date: 2013-09-22 21:22-0500\n"
+"PO-Revision-Date: 2013-09-22 21:22-0500\n"
+"Last-Translator: Robert G. Johnson Jr.\n"
+"Language-Team: \n"
+"Language: English\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.7\n"
+"X-Poedit-KeywordsList: translate;_;gettext;gettext_noop\n"
+"X-Poedit-Basepath: /Users/oakensoul/Sites/Oakensoul/Cornerstone/\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-SearchPath-0: module\n"
+"X-Poedit-SearchPath-1: public\n"
+
+#: module/Cornerstone/view/error/404.phtml:3
+msgid "A 404 error occurred"
+msgstr ""
+
+#: module/Cornerstone/view/error/404.phtml:12
+#: module/Cornerstone/view/error/maintenance.phtml:12
+msgid "The requested controller was unable to dispatch the request."
+msgstr ""
+
+#: module/Cornerstone/view/error/404.phtml:15
+#: module/Cornerstone/view/error/maintenance.phtml:15
+msgid ""
+"The requested controller could not be mapped to an existing controller class."
+msgstr ""
+
+#: module/Cornerstone/view/error/404.phtml:18
+#: module/Cornerstone/view/error/maintenance.phtml:18
+msgid "The requested controller was not dispatchable."
+msgstr ""
+
+#: module/Cornerstone/view/error/404.phtml:21
+#: module/Cornerstone/view/error/maintenance.phtml:21
+msgid "The requested URL could not be matched by routing."
+msgstr ""
+
+#: module/Cornerstone/view/error/404.phtml:24
+#: module/Cornerstone/view/error/maintenance.phtml:24
+msgid "We cannot determine at this time why a 404 was generated."
+msgstr ""
+
+#: module/Cornerstone/view/error/404.phtml:36
+#: module/Cornerstone/view/error/maintenance.phtml:38
+msgid "Controller"
+msgstr ""
+
+#: module/Cornerstone/view/error/404.phtml:43
+#: module/Cornerstone/view/error/maintenance.phtml:45
+#, php-format
+msgid "resolves to %s"
+msgstr ""
+
+#: module/Cornerstone/view/error/404.phtml:55
+#: module/Cornerstone/view/error/index.phtml:10
+#: module/Cornerstone/view/error/maintenance.phtml:55
+msgid "Additional information"
+msgstr ""
+
+#: module/Cornerstone/view/error/404.phtml:58
+#: module/Cornerstone/view/error/404.phtml:82
+#: module/Cornerstone/view/error/index.phtml:13
+#: module/Cornerstone/view/error/index.phtml:37
+#: module/Cornerstone/view/error/maintenance.phtml:58
+#: module/Cornerstone/view/error/maintenance.phtml:82
+msgid "File"
+msgstr ""
+
+#: module/Cornerstone/view/error/404.phtml:62
+#: module/Cornerstone/view/error/404.phtml:86
+#: module/Cornerstone/view/error/index.phtml:17
+#: module/Cornerstone/view/error/index.phtml:41
+#: module/Cornerstone/view/error/maintenance.phtml:62
+#: module/Cornerstone/view/error/maintenance.phtml:86
+msgid "Message"
+msgstr ""
+
+#: module/Cornerstone/view/error/404.phtml:66
+#: module/Cornerstone/view/error/404.phtml:90
+#: module/Cornerstone/view/error/index.phtml:21
+#: module/Cornerstone/view/error/index.phtml:45
+#: module/Cornerstone/view/error/maintenance.phtml:66
+#: module/Cornerstone/view/error/maintenance.phtml:90
+msgid "Stack trace"
+msgstr ""
+
+#: module/Cornerstone/view/error/404.phtml:76
+#: module/Cornerstone/view/error/index.phtml:31
+#: module/Cornerstone/view/error/maintenance.phtml:76
+msgid "Previous exceptions"
+msgstr ""
+
+#: module/Cornerstone/view/error/404.phtml:105
+#: module/Cornerstone/view/error/index.phtml:60
+#: module/Cornerstone/view/error/maintenance.phtml:105
+msgid "No Exception available"
+msgstr ""
+
+#: module/Cornerstone/view/error/index.phtml:3
+msgid "An error occurred"
+msgstr ""
+
+#: module/Cornerstone/view/error/maintenance.phtml:3
+msgid "The site is currently down for maintenance."
+msgstr ""
+
+#: module/Cornerstone/view/layout/layout.phtml:12
+msgid "Cornerstone Module"
+msgstr ""
+
+#: module/Cornerstone/view/layout/layout.phtml:13
+msgid "Oakensoul"
+msgstr ""
+
+#: module/Cornerstone/view/layout/partials/site-header.phtml:16
+msgid "Home"
+msgstr ""

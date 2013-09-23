@@ -1,0 +1,41 @@
+<?php
+/**
+ *
+ * @author Oakensoul (http://www.oakensoul.com/)
+ * @link https://github.com/oakensoul/Cornerstone for the canonical source repository
+ * @copyright Copyright (c) 2013 Robert Gunnar Johnson Jr.
+ * @license http://opensource.org/licenses/BSD-2-Clause BSD-2-Clause
+ * @package Cornerstone
+ */
+
+$this->headTitle()->setSeparator(' : ');
+$this->headTitle()->setAutoEscape(false);
+
+$this->headMeta()->appendName('viewport', 'width=device-width, initial-scale=1.0');
+$this->headMeta()->setCharset("utf-8");
+
+$link = array();
+$link['rel'] = 'stylesheet';
+$link['href'] = '/theme/oakensoul/css/theme.css';
+$link['type'] = 'text/css';
+$link['media'] = 'screen';
+$this->headLink($link, 'APPEND');
+
+$link = array();
+$link['rel'] = 'stylesheet';
+$link['href'] = '/theme/oakensoul/css/navbar.css';
+$link['type'] = 'text/css';
+$link['media'] = 'screen';
+$this->headLink($link, 'APPEND');
+
+$link = array();
+$link['rel'] = 'stylesheet';
+$link['href'] = '/theme/oakensoul/css/cornerstone.css';
+$link['type'] = 'text/css';
+$link['media'] = 'screen';
+$this->headLink($link, 'APPEND');
+
+$link = array();
+$link['rel'] = 'shortcut icon';
+$link['href'] = '/favicon.png';
+$this->headLink($link, 'APPEND');

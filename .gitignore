@@ -1,0 +1,6 @@
+.buildpath
+.project
+/.settings
+/vendor
+/data/cache
+/config/autoload/local.php

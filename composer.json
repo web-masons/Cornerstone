@@ -1,0 +1,30 @@
+{
+    "name": "oakensoul/Cornerstone",
+    "description": "Cornerstone ZF2 base application Module",
+    "license": "BSD-2",
+    "keywords": [
+        "framework",
+        "zf2",
+        "oakensoul",
+        "skeleton"
+    ],
+    "homepage": "https://github.com/oakensoul/Cornerstone/",
+    "require": {
+        "php": ">=5.4",
+        "zendframework/zendframework": ">=2.2",
+        "phpunit/phpunit": "3.7.*"
+    },
+    "minimum-stability": "stable",
+    "repositories": [
+      {
+        "type": "composer",
+        "url": "https://packages.zendframework.com/"
+      }
+    ],
+    "scripts" : {
+      "post-install-cmd" : [
+      ],
+      "post-update-cmd" : [
+      ]
+    }
+}
