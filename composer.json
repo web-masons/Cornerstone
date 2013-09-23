@@ -15,6 +15,14 @@
         "phpunit/phpunit": "3.7.*"
     },
     "minimum-stability": "stable",
+    "autoload": {
+      "psr-0": {
+        "Cornerstone\\" : "./module/Cornerstone/src/"
+      },
+      "classmap": [
+        "./module/Cornerstone/Module.php"
+      ]
+    },
     "repositories": [
       {
         "type": "composer",
