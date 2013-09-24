@@ -1,7 +1,7 @@
 <?php
 namespace ApplicationTest\Controller;
 
-use Cornerstone\Controller\IndexController;
+use Cornerstone\Http\Controller\IndexController;
 use ApplicationTest\Bootstrap;
 use Zend\Mvc\Router\Http\TreeRouteStack as HttpRouter;
 use Zend\Http\Request;
@@ -35,7 +35,7 @@ class IndexControllerTest extends PHPUnit_Framework_TestCase
         $config = $serviceManager->get('Config');
         $routerConfig = isset($config['router']) ? $config['router'] : array ();
         $router = HttpRouter::factory($routerConfig);
-        
+
         $this->event->setRouter($router);
         $this->event->setRouteMatch($this->routeMatch);
         $this->controller->setEvent($this->event);
@@ -45,12 +45,12 @@ class IndexControllerTest extends PHPUnit_Framework_TestCase
     public function testIndexActionCanBeAccessed ()
     {
         $this->routeMatch->setParam('action', 'index');
-        
+
         $result = $this->controller->dispatch($this->request);
-        
+
         /* @var $response Response */
         $response = $this->controller->getResponse();
-        
+
         $this->assertEquals(200, $response->getStatusCode());
     }
 }

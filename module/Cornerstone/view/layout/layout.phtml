@@ -7,17 +7,10 @@
  * @license http://opensource.org/licenses/BSD-2-Clause BSD-2-Clause
  * @package Cornerstone
  */
-use Locale;
-
 $this->headTitle($this->translate('Cornerstone Module'), 'APPEND');
 $this->headTitle($this->translate('Oakensoul'), 'APPEND');
 
 echo $this->doctype();
-
-/**
- * eventually this will be replaced with some strategy goodness
- */
-//$this->partial('layout/theme/oakensoul');
 ?>
 
 <!--[if lt IE 7]> <html lang="<?php echo Locale::getDefault(); ?>" class="no-js ie lt-ie10 lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
