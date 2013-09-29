@@ -54,6 +54,12 @@ class Theme extends AbstractListenerAggregate
         /* @var $match RouteMatch */
         $match = $pEvent->getRouteMatch();
 
+        if ( false === is_object($match))
+        {
+            /** if there's no route match, we're in a 404 state, abort */
+            return;
+        }
+
         $theme = $match->getParam('theme');
 
         /**
@@ -64,6 +70,17 @@ class Theme extends AbstractListenerAggregate
         if (false === empty($theme))
         {
             $partial = $view_helper_manager->get('partial');
+
+
+
+            // @todo should be grabbing the "layout/theme" path from config maybe?
+            // or... could allow "theme" to be the full piece from module config...
+
+            // it could be fine since we're already in the listener / strategy, and
+            // if someone doesn't like it, they can override it... think about it
+            // more when its not 1 am
+
+
             $partial('layout/theme/' . $theme);
         }
     }
