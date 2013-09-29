@@ -147,7 +147,17 @@ $console = array(
                     )
                 )
             ),
-
+            'cli-application-cache-empty' => array(
+                'options' => array(
+                    'route' => 'application cache-empty [--verbose]',
+                    'defaults' => array(
+                        'controller' => 'Console\Controller\Application',
+                        'action' => 'event',
+                        'event' => Cornerstone\EventManager\Service::EVENT_APPLICATION_CACHE_EMPTY,
+                        'installer-route' => true
+                    )
+                )
+            ),
             'application-initialization' => array(
                 'options' => array(
                     'route' => 'application initialize --env= [--force] [--verbose]',

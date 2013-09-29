@@ -20,7 +20,7 @@ use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
 use FilesystemIterator;
 
-class ApplicationCacheInit extends EventManager\AbstractListenerAggregate implements ServiceManager\ServiceLocatorAwareInterface
+class ApplicationCacheEmpty extends EventManager\AbstractListenerAggregate implements ServiceManager\ServiceLocatorAwareInterface
 {
 
     protected $mServiceLocator;
@@ -34,8 +34,7 @@ class ApplicationCacheInit extends EventManager\AbstractListenerAggregate implem
         $options[] = $this;
         $options[] = 'EventHandler';
 
-        $this->listeners[] = $pEventManager->attach(Service::EVENT_APPLICATION_INITIALIZE, $options, 10);
-        $this->listeners[] = $pEventManager->attach(Service::EVENT_APPLICATION_CACHE_INIT, $options, 1);
+        $this->listeners[] = $pEventManager->attach(Service::EVENT_APPLICATION_CACHE_EMPTY, $options, 1);
     }
 
     public function EventHandler (Console\Event $pEvent)
@@ -62,12 +61,13 @@ class ApplicationCacheInit extends EventManager\AbstractListenerAggregate implem
             {
                 if (true == $pEvent->getVerboseFlag())
                 {
-                    $console->write("        [NOTICE] ", ColorInterface::LIGHT_CYAN);
-                    $console->writeLine("Application config does not contain an entry for 'module_listener_options'.", ColorInterface::CYAN);
+                    $console->write("        [Failure] ", ColorInterface::RED);
+                    $console->writeLine("Application config does not contain an entry for 'module_listener_options'.", ColorInterface::RED);
                     $console->write("                 ", ColorInterface::LIGHT_CYAN);
-                    $console->writeLine("Skipping creation of application cache folder." . PHP_EOL, ColorInterface::CYAN);
+                    $console->writeLine("Skipping emptying of application cache folder." . PHP_EOL, ColorInterface::CYAN);
                 }
 
+                throw new Exception('Application config error, module_listener_options, does not exist. Directory empty failed!');
                 return;
             }
 
@@ -91,29 +91,6 @@ class ApplicationCacheInit extends EventManager\AbstractListenerAggregate implem
                 $console->writeLine($cache_dir, ColorInterface::YELLOW);
             }
 
-            if (false === is_dir($cache_dir))
-            {
-                $result = mkdir($cache_dir, 0775, true);
-
-                if (true === $result)
-                {
-                    if (true == $pEvent->getVerboseFlag())
-                    {
-                        $console->write("        [NOTICE] ", ColorInterface::LIGHT_CYAN);
-                        $console->writeLine("Cache directory has been created.", ColorInterface::CYAN);
-                    }
-                }
-                else
-                {
-                    if (true == $pEvent->getVerboseFlag())
-                    {
-                        $console->write("       [Failure] ", ColorInterface::RED);
-                        $console->writeLine('Failed to create cache directory, ' . $cache_dir . PHP_EOL, ColorInterface::RED);
-                    }
-
-                    throw new Exception('Failed to create cache directory, ' . $cache_dir);
-                }
-            }
 
             if (false === is_writable($cache_dir))
             {
@@ -128,8 +105,27 @@ class ApplicationCacheInit extends EventManager\AbstractListenerAggregate implem
 
             if (true == $pEvent->getVerboseFlag())
             {
+                $console->write("        [NOTICE] ", ColorInterface::LIGHT_CYAN);
+                $console->writeLine("Emptying cache directory of any existing files/folders.", ColorInterface::CYAN);
+            }
+
+            $iterator = new RecursiveDirectoryIterator($cache_dir, FilesystemIterator::SKIP_DOTS);
+
+            foreach (new RecursiveIteratorIterator($iterator, RecursiveIteratorIterator::CHILD_FIRST) as $path)
+            {
+                if (true == $pEvent->getVerboseFlag())
+                {
+                    $console->write("        [NOTICE] ", ColorInterface::LIGHT_CYAN);
+                    $console->writeLine("Deleting " . $path->getPathname(), ColorInterface::CYAN);
+                }
+
+                $path->isFile() ? unlink($path->getPathname()) : rmdir($path->getPathname());
+            }
+
+            if (true == $pEvent->getVerboseFlag())
+            {
                 $console->write("       [Success] ", ColorInterface::GREEN);
-                $console->writeLine("Application cache folder ($cache_dir) exists and is writable." . PHP_EOL);
+                $console->writeLine("Application cache folder ($cache_dir) has been emptied." . PHP_EOL);
             }
         }
         catch (Exception $e)

@@ -49,6 +49,7 @@ class Module implements ConsoleUsageProviderInterface, AutoloaderProviderInterfa
         $service_manager->get('Console\InitializeApplicationStrategy')->attach($cornerstone_event_manager);
         $service_manager->get('Console\BuildVirtualHostostStrategy')->attach($cornerstone_event_manager);
         $service_manager->get('Console\ApplicationCacheInitStrategy')->attach($cornerstone_event_manager);
+        $service_manager->get('Console\ApplicationCacheEmptyStrategy')->attach($cornerstone_event_manager);
     }
 
     public function getConfig ()
@@ -75,7 +76,8 @@ class Module implements ConsoleUsageProviderInterface, AutoloaderProviderInterfa
             'application check-config --env=<environment>' => "Check configuration for the application.",
             'application check-integration --env=<environment>' => "Check service integrations for the application.",
             'application build-vhost --env=<environment>' => 'Generates a vhost file for the project.',
-            'application cache-init' => "Initialize and empty the application cache folder.",
+            'application cache-init' => "Initialize the application cache folder.",
+            'application cache-empty' => "Empty the application cache folder.",
 
             'Optional Parameters:',
             array (
@@ -107,6 +109,7 @@ class Module implements ConsoleUsageProviderInterface, AutoloaderProviderInterfa
 
         $invokables['Console\BuildVirtualHostostStrategy'] = 'Cornerstone\Console\Listener\BuildVirtualHost';
         $invokables['Console\ApplicationCacheInitStrategy'] = 'Cornerstone\Console\Listener\ApplicationCacheInit';
+        $invokables['Console\ApplicationCacheEmptyStrategy'] = 'Cornerstone\Console\Listener\ApplicationCacheEmpty';
         $invokables['Console\InitializeApplicationStrategy'] = 'Cornerstone\Console\Listener\InitializeApplication';
 
         $service_config = array (

@@ -17,5 +17,6 @@ class Service extends EventManager\EventManager
     const EVENT_APPLICATION_CHECK_INTEGRATION = 'ApplicationCheckIntegration';
     const EVENT_APPLICATION_INITIALIZE = 'ApplicationInitialize';
     const EVENT_APPLICATION_CACHE_INIT = 'ApplicationCacheInit';
+    const EVENT_APPLICATION_CACHE_EMPTY = 'ApplicationCacheEmpty';
     const EVENT_APPLICATION_BUILD_VHOST = 'ApplicationBuildVhost';
 }
