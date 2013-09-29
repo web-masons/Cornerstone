@@ -46,11 +46,9 @@ class Module implements ConsoleUsageProviderInterface, AutoloaderProviderInterfa
         $cornerstone_event_manager = $service_manager->get('Application\EventManager');
 
         /* attach our CLI strategies */
-        // $service_manager->get('Console\ApplicationCacheInit')->attach($cornerstone_event_manager);
-
         $service_manager->get('Console\InitializeApplicationStrategy')->attach($cornerstone_event_manager);
-        $service_manager->get('Console\CheckApplicationConfigurationStrategy')->attach($cornerstone_event_manager);
-        $service_manager->get('Console\CheckApplicationIntegrationStrategy')->attach($cornerstone_event_manager);
+        $service_manager->get('Console\BuildVirtualHostostStrategy')->attach($cornerstone_event_manager);
+        $service_manager->get('Console\ApplicationCacheInitStrategy')->attach($cornerstone_event_manager);
     }
 
     public function getConfig ()
@@ -100,16 +98,16 @@ class Module implements ConsoleUsageProviderInterface, AutoloaderProviderInterfa
 
         $invokables = array ();
 
-        $invokables['Http\LocalizationStrategy'] = 'Cornerstone\Http\Listener\LocalizationStrategy';
-        $invokables['Http\SchemeStrategy'] = 'Cornerstone\Http\Listener\SchemeStrategy';
-        $invokables['Http\BootstrapStrategy'] = 'Cornerstone\Http\Listener\TwitterBootstrap3Strategy';
-        $invokables['Http\ThemeStrategy'] = 'Cornerstone\Http\Listener\ThemeStrategy';
+        $invokables['Http\LocalizationStrategy'] = 'Cornerstone\Http\Listener\Localization';
+        $invokables['Http\SchemeStrategy'] = 'Cornerstone\Http\Listener\Scheme';
+        $invokables['Http\BootstrapStrategy'] = 'Cornerstone\Http\Listener\TwitterBootstrap3';
+        $invokables['Http\ThemeStrategy'] = 'Cornerstone\Http\Listener\Theme';
 
         $invokables['Application\EventManager'] = 'Cornerstone\EventManager\Service';
 
-        $invokables['Console\InitializeApplicationStrategy'] = 'Cornerstone\Console\Listener\InitializeApplicationStrategy';
-        $invokables['Console\CheckApplicationConfigurationStrategy'] = 'Cornerstone\Console\Listener\CheckApplicationConfigurationStrategy';
-        $invokables['Console\CheckApplicationIntegrationStrategy'] = 'Cornerstone\Console\Listener\CheckApplicationIntegrationStrategy';
+        $invokables['Console\BuildVirtualHostostStrategy'] = 'Cornerstone\Console\Listener\BuildVirtualHost';
+        $invokables['Console\ApplicationCacheInitStrategy'] = 'Cornerstone\Console\Listener\ApplicationCacheInit';
+        $invokables['Console\InitializeApplicationStrategy'] = 'Cornerstone\Console\Listener\InitializeApplication';
 
         $service_config = array (
             'factories' => $factories,

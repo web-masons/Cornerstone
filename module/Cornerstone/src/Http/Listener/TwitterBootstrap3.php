@@ -15,7 +15,7 @@ use Zend\Mvc\MvcEvent;
 use Zend\EventManager\AbstractListenerAggregate;
 use Zend\Console;
 
-class TwitterBootstrap3Strategy extends AbstractListenerAggregate
+class TwitterBootstrap3 extends AbstractListenerAggregate
 {
 
     protected $mServiceLocator;

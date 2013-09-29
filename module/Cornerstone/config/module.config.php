@@ -130,7 +130,8 @@ $console = array(
                     'route' => 'application build-vhost --env= [--force] [--verbose]',
                     'defaults' => array(
                         'controller' => 'Console\Controller\Application',
-                        'action' => 'build-vhost',
+                        'action' => 'event',
+                        'event' => Cornerstone\EventManager\Service::EVENT_APPLICATION_BUILD_VHOST,
                         'installer-route' => true
                     )
                 )
@@ -140,7 +141,8 @@ $console = array(
                     'route' => 'application cache-init [--verbose]',
                     'defaults' => array(
                         'controller' => 'Console\Controller\Application',
-                        'action' => 'cache-init',
+                        'action' => 'event',
+                        'event' => Cornerstone\EventManager\Service::EVENT_APPLICATION_CACHE_INIT,
                         'installer-route' => true
                     )
                 )
@@ -151,7 +153,8 @@ $console = array(
                     'route' => 'application initialize --env= [--force] [--verbose]',
                     'defaults' => array(
                         'controller' => 'Console\Controller\Application',
-                        'action' => 'initialize',
+                        'action' => 'event',
+                        'event' => Cornerstone\EventManager\Service::EVENT_APPLICATION_INITIALIZE,
                         'installer-route' => true
                     )
                 )
@@ -162,7 +165,8 @@ $console = array(
                     'route' => 'application check-config --env= [--force] [--verbose]',
                     'defaults' => array(
                         'controller' => 'Console\Controller\Application',
-                        'action' => 'check-config',
+                        'action' => 'event',
+                        'event' => Cornerstone\EventManager\Service::EVENT_APPLICATION_CHECK_CONFIGURATION,
                         'installer-route' => true
                     )
                 )
@@ -173,7 +177,8 @@ $console = array(
                     'route' => 'application check-integration --env= [--force] [--verbose]',
                     'defaults' => array(
                         'controller' => 'Console\Controller\Application',
-                        'action' => 'check-integration',
+                        'action' => 'event',
+                        'event' => Cornerstone\EventManager\Service::EVENT_APPLICATION_CHECK_INTEGRATION,
                         'installer-route' => true
                     )
                 )

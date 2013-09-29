@@ -11,30 +11,147 @@ namespace Cornerstone\Console\Controller;
 
 use Cornerstone\EventManager;
 use Zend\Mvc\Controller\AbstractActionController;
-use Zend\View\Model\ViewModel;
 use Zend\Console\ColorInterface;
 use Zend\Console;
 use Exception;
-use Zend\Config\Config;
-use Zend\View\Resolver\TemplateMapResolver;
-use Zend\View\Renderer\PhpRenderer;
- 
+use Zend\Console\Response;
+
 class ApplicationController extends AbstractActionController
 {
 
-    protected $mForce;
+    protected $mForce = false;
 
-    protected $mVerbose;
-    
+    protected $mVerbose = false;
+
+    protected $mEnvironment = 'production';
+
+    protected $mEvent;
+
+    protected $mAction;
+
     /**
      * these should be treated as a bitmask, numbers should go in bit math sequence
      * i.e.
      * 1, 2, 4, 8, ...
+     *
+     * @todo However, now that i'm switching everything over to be event driven... this
+     *       won't work as well, I need to figure out another solution...
+     *
+     *       My current thoughts are that when I have time I'll create an invokable
+     *       service that will allow the various listeners to register the error
+     *       states they care about and the service itself will handle taking
+     *       those registered errors and assigning them an appropriate bitmask
+     *       structure. I'm a bit worried that this will be rather dynamic and
+     *       could cause issues... thus I haven't implemented it yet.
+     *
+     *       const ERROR_UNDEFINED = 1;
+     *       const ERROR_LISTENER_OPTIONS_NOT_CONFIGURED = 2;
+     *       const ERROR_FAILED_TO_CREATE_CACHE_FOLDER = 4;
+     *       const ERROR_CACHE_FOLDER_NOT_WRITABLE = 8;
      */
-    const ERROR_UNDEFINED = 1;
-    const ERROR_LISTENER_OPTIONS_NOT_CONFIGURED = 2;
-    const ERROR_FAILED_TO_CREATE_CACHE_FOLDER = 4;
-    const ERROR_CACHE_FOLDER_NOT_WRITABLE = 8;
+
+    /**
+     * This action handles console requests to the Application.
+     * It is expected that
+     * the route that matches this action will set an "event" that is derived from
+     * the Cornerstone\EventManager\Service
+     *
+     * It will handle adding a bunch of verbose error logging and will trigger the
+     * provided 'event' through the EventManager. It is expected that developers
+     * will attach Listeners to these events to handle the various calls that get
+     * implemented.
+     *
+     * It is recommended that this is done by creating strategies in the Module.php
+     * file by defining them in the getServiceConfig function, and calling them
+     * in the onBootstrap method. Please see the packaged Module.php file for
+     * examples.
+     *
+     * @return \Zend\Console\Response
+     */
+    public function eventAction ()
+    {
+        /* This method makes sure we're in a console view, if not, tosses an exception */
+        $this->RequireConsoleRequest();
+
+        $this->mConsole = $this->getServiceLocator()->get('console');
+        $this->mForce = $this->params('force', false);
+        $this->mEvent = $this->params('event', false);
+        $this->mVerbose = $this->params('verbose', false);
+        $this->mEnvironment = $this->params()->fromRoute('env', $this->mEnvironment);
+
+        /**
+         * Output the standard Console Flag for verbose output
+         */
+        if (true == $this->mVerbose)
+        {
+            $this->mConsole->clearScreen();
+
+            $this->mConsole->write("    [Controller] ", ColorInterface::LIGHT_GREEN);
+            $this->mConsole->writeLine(__CLASS__, ColorInterface::YELLOW);
+
+            $this->mConsole->write("        [Action] ", ColorInterface::LIGHT_GREEN);
+            $this->mConsole->writeLine(__FUNCTION__, ColorInterface::YELLOW);
+
+            $this->mConsole->write("       [Verbose] ", ColorInterface::LIGHT_GREEN);
+            $this->mConsole->writeLine('true', ColorInterface::YELLOW);
+
+            $this->mConsole->write("         [Force] ", ColorInterface::LIGHT_GREEN);
+            $this->mConsole->writeLine(true === $this->mForce ? 'true' : 'false', ColorInterface::YELLOW);
+
+            $this->mConsole->write(" [Event Manager] ", ColorInterface::LIGHT_GREEN);
+            $this->mConsole->writeLine('Cornerstone\EventManager\Service', ColorInterface::YELLOW);
+
+            $this->mConsole->write("       [Trigger] ", ColorInterface::LIGHT_GREEN);
+            $this->mConsole->writeLine($this->mEvent, ColorInterface::YELLOW);
+            $this->mConsole->writeLine();
+        }
+
+        $event = new EventManager\Console\Event();
+        $event->setName($this->mEvent);
+        $event->setTarget($this);
+        $event->setForceFlag($this->mForce);
+        $event->setVerboseFlag($this->mVerbose);
+        $event->setEnvironment($this->mEnvironment);
+
+        $event_result = $this->EventManager()->trigger($event);
+
+        $errors_encountered = false;
+
+        $response = new Response();
+        $response->setErrorLevel(0);
+
+        foreach ($event_result as $result)
+        {
+            if (is_object($result))
+            {
+                if (0 < $result->getErrorLevel())
+                {
+                    $this->mConsole->write("[Error] ", ColorInterface::RED);
+
+                    /* we have to use error log here so that it will write to stderr instead of stdout */
+                    error_log($result->getContent());
+
+                    $error_level = $result->getErrorLevel() + $response->getErrorLevel();
+                    $response->setErrorLevel($error_level);
+                }
+                else
+                {
+                    $this->mConsole->writeLine($result->getContent());
+                }
+            }
+        }
+
+        if (true == $this->mVerbose && 0 == $response->getErrorLevel())
+        {
+            $this->mConsole->write(' --------------- ', ColorInterface::LIGHT_GREEN);
+            $this->mConsole->writeLine('-----------------------------------------------------------', ColorInterface::YELLOW);
+
+            $this->mConsole->write("     [Completed] ", ColorInterface::LIGHT_GREEN);
+            $this->mConsole->writeLine("Event processing", ColorInterface::YELLOW);
+        }
+
+        return $response;
+    }
 
     /**
      * RequireConsoleRequest
@@ -49,7 +166,7 @@ class ApplicationController extends AbstractActionController
     protected function RequireConsoleRequest ()
     {
         $request = $this->getRequest();
-        
+
         // Make sure that we are running in a console and that we have not somehow
         // accidentally exposed this route to http traffic
         if (! $request instanceof Console\Request)
@@ -58,371 +175,19 @@ class ApplicationController extends AbstractActionController
         }
     }
 
-    public function initializeAction ()
-    {
-        /* This method makes sure we're in a console view, if not, tosses an exception */
-        $this->RequireConsoleRequest();
-        
-        $this->mConsole = $this->getServiceLocator()->get('console');
-        
-        $config = $this->getServiceLocator()->get('Config');
-        $config = new Config($config);
-        
-        $this->mForce = $this->params('force', false);
-        $this->mVerbose = $this->params('verbose', false);
-        
-        try
-        {
-            $environment = $this->params()->fromRoute('env', 'production');
-            
-            if (true == $this->mVerbose)
-            {
-                $this->mConsole->writeLine("Initializing Mogwai application for environment: $environment", ColorInterface::GREEN);
-            }
-            
-            $details = array ();
-            $details['env'] = $environment;
-            $details['force'] = $this->mForce;
-            $details['verbose'] = $this->mVerbose;
-            
-            $this->EventManager()->trigger(EventManager\Service::EVENT_INITIALIZE_APPLICATION, $this, $details);
-            
-            if (true == $this->mVerbose)
-            {
-                $this->mConsole->writeLine("Application Initialization completed.", ColorInterface::GREEN);
-            }
-        }
-        catch (Exception $e)
-        {
-            /* Add alternate exception catches if you want to catch errors that this controller doesn't know about */
-            
-            $error = isset($error) ? $error : static::ERROR_UNDEFINED;
-            
-            $this->mConsole->write("  [Error] ", ColorInterface::RED);
-            
-            /* we have to use error log here so that it will write to stderr instead of stdout */
-            error_log('Exception Encountered: ' . $e->getMessage());
-            
-            $response = new Console\Response();
-            $response->setErrorLevel($error);
-            return $response;
-        }
-    }
-
-    public function checkConfigAction ()
-    {
-        /* This method makes sure we're in a console view, if not, tosses an exception */
-        $this->RequireConsoleRequest();
-        
-        $this->mConsole = $this->getServiceLocator()->get('console');
-        
-        $config = $this->getServiceLocator()->get('Config');
-        $config = new Config($config);
-        
-        $this->mForce = $this->params('force', false);
-        $this->mVerbose = $this->params('verbose', false);
-        
-        try
-        {
-            $environment = $this->params()->fromRoute('env', 'production');
-            
-            if (true == $this->mVerbose)
-            {
-                $this->mConsole->writeLine("Checking application configuration for environment: $environment", ColorInterface::GREEN);
-            }
-            
-            $details = array ();
-            $details['env'] = $environment;
-            $details['force'] = $this->mForce;
-            $details['verbose'] = $this->mVerbose;
-            
-            $this->EventManager()->trigger(EventManager\Service::EVENT_CHECK_APPLICATION_CONFIGURATION, $this, $details);
-            
-            /*
-             * basic concept is that each module will register listeners if they have any items that require
-             * configuration to function
-             */
-            
-            if (true == $this->mVerbose)
-            {
-                $this->mConsole->writeLine("Configuration check completed.", ColorInterface::GREEN);
-            }
-        }
-        catch (Exception $e)
-        {
-            /* Add alternate exception catches if you want to catch errors that this controller doesn't know about */
-            
-            $error = isset($error) ? $error : static::ERROR_UNDEFINED;
-            
-            $this->mConsole->write("  [Error] ", ColorInterface::RED);
-            
-            /* we have to use error log here so that it will write to stderr instead of stdout */
-            error_log('Exception Encountered: ' . $e->getMessage());
-            
-            $response = new Console\Response();
-            $response->setErrorLevel($error);
-            return $response;
-        }
-    }
-
-    public function checkIntegrationAction ()
-    {
-        /* This method makes sure we're in a console view, if not, tosses an exception */
-        $this->RequireConsoleRequest();
-        
-        $this->mConsole = $this->getServiceLocator()->get('console');
-        
-        $config = $this->getServiceLocator()->get('Config');
-        $config = new Config($config);
-        
-        $this->mForce = $this->params('force', false);
-        $this->mVerbose = $this->params('verbose', false);
-        
-        try
-        {
-            $environment = $this->params()->fromRoute('env', 'production');
-            
-            if (true == $this->mVerbose)
-            {
-                $this->mConsole->writeLine("Performing Integration check for Mogwai application on environment: $environment", ColorInterface::GREEN);
-            }
-            
-            $details = array ();
-            $details['env'] = $environment;
-            $details['force'] = $this->mForce;
-            $details['verbose'] = $this->mVerbose;
-            
-            $this->EventManager()->trigger(EventManager\Service::EVENT_CHECK_APPLICATION_INTEGRATION, $this, $details);
-            
-            if (true == $this->mVerbose)
-            {
-                $this->mConsole->writeLine("Integration check completed.", ColorInterface::GREEN);
-            }
-        }
-        catch (Exception $e)
-        {
-            /* Add alternate exception catches if you want to catch errors that this controller doesn't know about */
-            
-            $error = isset($error) ? $error : static::ERROR_UNDEFINED;
-            
-            $this->mConsole->write("  [Error] ", ColorInterface::RED);
-            
-            /* we have to use error log here so that it will write to stderr instead of stdout */
-            error_log('Exception Encountered: ' . $e->getMessage());
-            
-            $response = new Console\Response();
-            $response->setErrorLevel($error);
-            return $response;
-        }
-    }
-
-    
-    
-    
-    public function buildVhostAction ()
-    {
-        /* This method makes sure we're in a console view, if not, tosses an exception */
-        $this->RequireConsoleRequest();
-    
-        $this->mConsole = $this->getServiceLocator()->get('console');
-    
-        $config = $this->getServiceLocator()->get('Config');
-        $config = new Config($config);
-    
-        $this->mForce = $this->params('force', false);
-        $this->mVerbose = $this->params('verbose', false);
-    
-        try
-        {
-            $environment = $this->params()->fromRoute('env', 'production');
-    
-            if (true == $this->mVerbose)
-            {
-                $this->mConsole->writeLine("Generating vhost file for environment: $environment", ColorInterface::GREEN);
-            }
-    
-            // create the view model for the vhost template
-            $view = new ViewModel();
-            $view->setTemplate('application/vhost');
-    
-            $prefix = $config->Installation->Vhost->Server->get('Prefix', '');
-            $region = $config->Installation->Vhost->Server->get('Region', 'www.');
-            $domain = $config->Installation->Vhost->Server->get('Domain', 'mogwai-zf2');
-            $suffix = $config->Installation->Vhost->Server->get('Suffix', '.com');
-            $view->ServerName = $prefix . $region . $domain . $suffix;
-    
-            $public = $config->Installation->Vhost->Server->get('PublicFolder', 'public');
-            $view->DocumentRoot = getcwd() . "/$public/";
-            $view->ApplicationEnv = $environment;
-            $view->Config = $config->Installation->get('Vhost', array ());
-    
-            // setup specific configurations
-            $view->ApacheLogDir = $config->Installation->Vhost->get('ApacheLog', '${APACHE_LOG_DIR}');
-            $view->UseSyslog = $config->Installation->Vhost->get('UseSyslog', true);
-    
-            $view->Ports = $config->Installation->Vhost->get('Ports', array ());
-    
-            $view->CorsOrigin = false;
-            if ($config->Installation->get('CorsOrigin', false))
-            {
-                $cors = $config->Installation->get('CorsOrigin', false);
-    
-                if (is_object($cors))
-                {
-                    $origin_list = implode('|', $cors->toArray());
-                    $view->CorsOrigin = 'http(s)?://(' . $origin_list . ')';
-                }
-                else
-                {
-                    throw new Exception('CorsOrigin configuration must be an array.');
-                }
-            }
-            elseif ($config->Installation->get('CorsHeader', false))
-            {
-                throw new Exception('CorsHeader has been deprecated. Please use a CorsOrigin array if you are setting up a new config.');
-            }
-    
-            // render template
-            // setup the tempate map
-            $map = new TemplateMapResolver(array (
-                'application/vhost' => $config->view_manager->template_map->get('application/vhost')
-            ));
-    
-            $renderer = new PhpRenderer();
-            $renderer->setResolver($map);
-            $txt = $renderer->render($view);
-    
-            // write the vhost file here....
-            $vhost_extension = $config->Installation->Vhost->get('Extension', 'vhost');
-            $vhost_path = $config->Installation->Vhost->get('Path', '/etc/apache2/sites-available/');
-    
-            $vhost_filename = $region . $domain . '.com' . '.' . $vhost_extension;
-            $vhost_file = $vhost_path . $vhost_filename;
-    
-            if (true == $this->mVerbose)
-            {
-                $this->mConsole->writeLine("Writing vhost file to: $vhost_file", ColorInterface::GREEN);
-            }
-    
-            $pointer = fopen($vhost_file, 'w');
-            if ($pointer === false)
-            {
-                $this->mConsole->writeLine("Error opening file for writing: $vhost_file", ColorInterface::RED);
-                $this->mConsole->writeLine("Building vhost failed!", ColorInterface::RED);
-            }
-            else
-            {
-                fwrite($pointer, $txt);
-                fclose($pointer);
-            }
-        }
-        catch (Exception $e)
-        {
-            $this->mConsole->writeLine("Error building vhost: " . $e->getMessage(), ColorInterface::RED);
-            $this->mConsole->writeLine("Building vhost failed!", ColorInterface::RED);
-        }
-    }    
-    
-    public function cacheInitAction ()
-    {
-        /* This method makes sure we're in a console view, if not, tosses an exception */
-        $this->RequireConsoleRequest();
-    
-        /* @var $console Console\Request */
-        $console = $this->getServiceLocator()->get('console');
-    
-        $config = $this->getServiceLocator()->get('ApplicationConfig');
-    
-        $this->mForce = $this->params('force', false);
-        $this->mVerbose = $this->params('verbose', false);
-    
-        $already_exists = false;
-    
-        if (true == $this->mVerbose)
-        {
-            $console->writeLine("Initializing application-cache folder...", ColorInterface::GREEN);
-        }
-    
-        try
-        {
-            if (false === array_key_exists('module_listener_options', $config))
-            {
-                $error = static::ERROR_LISTENER_OPTIONS_NOT_CONFIGURED;
-                throw new \RuntimeException('Configuration key "module_listener_options" not set in application config.');
-            }
-            elseif (false === array_key_exists('cache_dir', $config['module_listener_options']))
-            {
-                $error = static::ERROR_LISTENER_OPTIONS_NOT_CONFIGURED;
-                throw new \RuntimeException('Configuration key "module_listener_options[cache_dir]" not set in application config.');
-            }
-    
-            $folder = $config['module_listener_options']['cache_dir'];
-    
-            if (true == $this->mVerbose)
-            {
-                $console->write("  [Info] ");
-                $console->writeLine('$configuration[module_listener_options][cache_dir] = ' . $folder);
-            }
-    
-            if (false === is_dir($folder))
-            {
-                $console->write("  [Info] ");
-                $console->writeLine('Attempting to create ' . $folder);
-                mkdir($folder, 0775, true);
-            }
-            elseif (true == $this->mVerbose)
-            {
-                $console->write("  [Notice] ", ColorInterface::LIGHT_GREEN);
-                $console->writeLine(" $folder already exists.");
-                $already_exists = true;
-            }
-    
-            if (false === is_dir($folder))
-            {
-                $error = static::ERROR_FAILED_TO_CREATE_CACHE_FOLDER;
-                throw new \RuntimeException("Failed to create cache folder ($folder).");
-            }
-    
-            if (false === is_writable($folder))
-            {
-                $error = static::ERROR_CACHE_FOLDER_NOT_WRITABLE;
-                throw new \RuntimeException("Cache Folder ($folder) not writable.");
-            }
-    
-            if (true == $this->mVerbose && false == $already_exists)
-            {
-                $console->write("  [Success] ", ColorInterface::GREEN);
-                $console->writeLine("Created folder $folder");
-            }
-        }
-        catch (Exception $e)
-        {
-            $error = isset($error) ? $error : static::ERROR_UNDEFINED;
-    
-            $console->write("  [Error] ", ColorInterface::RED);
-    
-            /* we have to use error log here so that it will write to stderr instead of stdout */
-            error_log('Exception Encountered: ' . $e->getMessage());
-    
-            $response = new Console\Response();
-            $response->setErrorLevel($error);
-            return $response;
-        }
-    }
-    
-    
     /**
      * Returns the Cornerstone Event Manger Service for logging functionality
-     * 
+     *
      * @return Cornerstone\EventManager\Service
      */
     protected function EventManager ()
     {
         if (empty($this->mEventManager))
         {
-            $this->mEventManager = $this->getServiceLocator()->get('Cornerstone\EventManager');
+            $this->mEventManager = $this->getServiceLocator()->get('Application\EventManager');
+            $this->mEventManager->setEventClass('Zend\Mvc\MvcEvent');
         }
-        
+
         return $this->mEventManager;
     }
 }

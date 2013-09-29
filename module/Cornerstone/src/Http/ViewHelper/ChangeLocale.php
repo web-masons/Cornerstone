@@ -22,12 +22,12 @@ class ChangeLocale extends AbstractHelper implements ServiceLocatorAwareInterfac
     public function __invoke ($pLocale)
     {
         $sm = $this->getServiceLocator()->getServiceLocator();
-        
+
         $router = $sm->get('router');
         $request = $sm->get('request');
-        
+
         $match = $router->match($request);
-        
+
         if (is_null($match))
         {
             /* we hit a 404 */
@@ -40,9 +40,9 @@ class ChangeLocale extends AbstractHelper implements ServiceLocatorAwareInterfac
             $params = $match->getParams();
             $options['name'] = $match->getMatchedRouteName();
         }
-        
+
         $url = $router->assemble($params, $options);
-        
+
         return $url;
     }
 

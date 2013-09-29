@@ -16,7 +16,7 @@ use Zend\EventManager\AbstractListenerAggregate;
 use Zend\Mvc\Router\Http\TreeRouteStack;
 use Locale;
 
-class LocalizationStrategy extends AbstractListenerAggregate
+class Localization extends AbstractListenerAggregate
 {
 
     /**

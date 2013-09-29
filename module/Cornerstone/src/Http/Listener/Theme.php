@@ -16,7 +16,7 @@ use Zend\EventManager\AbstractListenerAggregate;
 use Zend\Console;
 use Zend\Mvc\Router\Console\RouteMatch;
 
-class ThemeStrategy extends AbstractListenerAggregate
+class Theme extends AbstractListenerAggregate
 {
 
     protected $mServiceLocator;

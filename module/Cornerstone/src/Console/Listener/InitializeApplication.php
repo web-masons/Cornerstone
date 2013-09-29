@@ -13,8 +13,9 @@ use Exception;
 use Zend\EventManager;
 use Zend\ServiceManager;
 use Cornerstone\EventManager\Service;
+use Cornerstone\EventManager\Console;
 
-class InitializeApplicationStrategy extends EventManager\AbstractListenerAggregate implements ServiceManager\ServiceLocatorAwareInterface
+class InitializeApplication extends EventManager\AbstractListenerAggregate implements ServiceManager\ServiceLocatorAwareInterface
 {
 
     protected $mServiceLocator;
@@ -31,33 +32,9 @@ class InitializeApplicationStrategy extends EventManager\AbstractListenerAggrega
         $this->listeners[] = $pEventManager->attach(Service::EVENT_APPLICATION_INITIALIZE, $options, 1);
     }
 
-    public function EventHandler (EventManager\Event $pEvent)
+    public function EventHandler (Console\Event $pEvent)
     {
-        $params = $pEvent->getParams();
-
-        /**
-         * vhost generation
-         */
-
-        /**
-         * application cache init
-         */
-        /**
-         * check config
-         */
-        /**
-         * check integration
-         */
-        \Zend\Debug\Debug::dump('TEST');
-
-    /**
-     * attach the "application cache init" strategy to the InitializeApplication event and the ApplicationCacheInit"
-     * event
-     */
-
-        // $logger = $this->getServiceLocator()->get('Logger\Event');
-        // $message = (array_key_exists('message', $params)) ? $params['message'] : 'Storefront\Event';
-        // $logger->info($message, $params);
+        // process event
     }
 
     /**

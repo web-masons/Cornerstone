@@ -13,9 +13,9 @@ use Zend\EventManager;
 
 class Service extends EventManager\EventManager
 {
-    const EVENT_TRACKING_CONFIGURATION_NOT_SET = 'TrackingConfigurationNotSet';
-    const EVENT_CHECK_APPLICATION_CONFIGURATION = 'CheckApplicationConfiguration';
-    const EVENT_CHECK_APPLICATION_INTEGRATION = 'CheckApplicationIntegration';
+    const EVENT_APPLICATION_CHECK_CONFIGURATION = 'ApplicationCheckConfiguration';
+    const EVENT_APPLICATION_CHECK_INTEGRATION = 'ApplicationCheckIntegration';
     const EVENT_APPLICATION_INITIALIZE = 'ApplicationInitialize';
     const EVENT_APPLICATION_CACHE_INIT = 'ApplicationCacheInit';
+    const EVENT_APPLICATION_BUILD_VHOST = 'ApplicationBuildVhost';
 }
