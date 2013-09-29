@@ -15,6 +15,7 @@ use Zend\Mvc\MvcEvent;
 use Zend\EventManager\AbstractListenerAggregate;
 use Zend\Mvc\Router\Http\TreeRouteStack;
 use Locale;
+use Zend\Console;
 
 class Localization extends AbstractListenerAggregate
 {
@@ -36,6 +37,14 @@ class Localization extends AbstractListenerAggregate
 
     public function onDispatch (MvcEvent $pEvent)
     {
+        $request = $pEvent->getRequest();
+
+        // Make sure that we are not running in a console
+        if ($request instanceof Console\Request)
+        {
+            return;
+        }
+
         /* @var $match RouteMatch */
         $match = $pEvent->getRouteMatch();
 
