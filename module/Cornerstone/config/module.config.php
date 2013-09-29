@@ -34,7 +34,7 @@ $router = array(
                     'action' => 'index',
                     'force_localized_route' => false,
                     'force_https_scheme' => false,
-                    'theme' => 'oakensoul'
+                    'theme' => 'default'
                 ),
                 'constraints' => array(
                     'lang' => '(en|fr|it|de|es)'
@@ -111,7 +111,7 @@ $view_manager = array(
     'exception_template' => 'error/index',
     'template_map' => array(
         'layout/layout' => __DIR__ . '/../view/layout/layout.phtml',
-        'layout/navigation' => __DIR__ . '/../view/layout/navigation.phtml',
+        'layout/navigation' => __DIR__ . '/../view/layout/partials/site/navigation.phtml',
         'application/index/index' => __DIR__ . '/../view/application/index/index.phtml',
         'error/404' => __DIR__ . '/../view/error/404.phtml',
         'error/index' => __DIR__ . '/../view/error/index.phtml',

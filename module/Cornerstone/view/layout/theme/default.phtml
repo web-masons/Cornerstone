@@ -16,26 +16,12 @@ $this->headMeta()->setCharset("utf-8");
 
 $link = array();
 $link['rel'] = 'stylesheet';
-$link['href'] = '/theme/oakensoul/css/theme.css';
-$link['type'] = 'text/css';
-$link['media'] = 'screen';
-$this->headLink($link, 'APPEND');
-
-$link = array();
-$link['rel'] = 'stylesheet';
-$link['href'] = '/theme/oakensoul/css/navbar.css';
-$link['type'] = 'text/css';
-$link['media'] = 'screen';
-$this->headLink($link, 'APPEND');
-
-$link = array();
-$link['rel'] = 'stylesheet';
-$link['href'] = '/theme/oakensoul/css/cornerstone.css';
+$link['href'] = '/theme/default/css/main.css';
 $link['type'] = 'text/css';
 $link['media'] = 'screen';
 $this->headLink($link, 'APPEND');
 
 $link = array();
 $link['rel'] = 'shortcut icon';
-$link['href'] = '/favicon.png';
+$link['href'] = '/theme/default/img/favicon.png';
 $this->headLink($link, 'APPEND');

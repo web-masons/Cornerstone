@@ -88,10 +88,5 @@ class TwitterBootstrap3 extends AbstractListenerAggregate
         $link['type'] = 'text/css';
         $link['media'] = 'screen';
         $head_link($link, 'APPEND');
-
-        $link = array ();
-        $link['rel'] = 'shortcut icon';
-        $link['href'] = '/favicon.png';
-        $head_link($link, 'APPEND');
     }
 }
