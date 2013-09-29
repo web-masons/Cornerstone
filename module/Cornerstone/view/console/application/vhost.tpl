@@ -14,6 +14,9 @@
 # @package Cornerstone
 
 <?php foreach ( $this->Ports as $host ) : ?>
+<?php if ( 'https' == $host['Scheme'] ) : ?>
+<IfModule mod_ssl.c>
+<?php endif; ?>
 <VirtualHost *:<?php echo $host['Port']; ?>>
   ServerName <?php echo $this->ServerName . PHP_EOL; ?>
   DocumentRoot <?php echo $this->DocumentRoot . PHP_EOL; ?>
@@ -25,9 +28,11 @@
   SSLCertificateKeyFile <?php echo $host['SSLKey'] . PHP_EOL; ?>
 
 <?php endif; ?>
-  <LocationMatch .*>
-    SecRuleEngine DetectionOnly
-  </LocationMatch>
+  <IfModule mod_security.c>
+    <LocationMatch .*>
+      SecRuleEngine DetectionOnly
+    </LocationMatch>
+  </IfModule>
 
   # add MIME encoding for web fonts
   AddType application/vnd.ms-fontobject .eot
@@ -36,7 +41,9 @@
   AddType application/font-woff .woff
   
   # dont allow sites to open our pages in a frame - prevents clickjacking security vulnerability
-  Header always append X-Frame-Options SAMEORIGIN
+  <IfModule mod_headers.c>
+    Header always append X-Frame-Options SAMEORIGIN
+  </IfModule>
 
   <Directory <?php echo $this->DocumentRoot;?>>
     DirectoryIndex index.php
@@ -75,5 +82,7 @@
 <?php endif;?>
   </Directory>
 </VirtualHost>
-
+<?php if ( 'https' == $host['Scheme'] ) : ?>
+</IfModule>
+<?php endif; ?>
 <?php endforeach; ?>
