@@ -96,11 +96,23 @@ class Module implements ConsoleUsageProviderInterface, AutoloaderProviderInterfa
 
     public function getServiceConfig ()
     {
+        /**
+         * Factories should be used when you have logic required to create the
+         * requested service or object. If it's a simple instantiation with no
+         * dependencies, use an invokable
+         */
         $factories = array ();
 
         $factories['translator'] = 'Zend\I18n\Translator\TranslatorServiceFactory';
         $factories['Site\Navigation'] = 'Zend\Navigation\Service\DefaultNavigationFactory';
 
+        /**
+         * Invokables should be used for a simple instantiation with no
+         * dependencies. If you have logic required to create the requested
+         * service or object, use a factory.
+         *
+         * Generally, invokables are great for strategy objects / Listeners
+         */
         $invokables = array ();
 
         $invokables['Http\LocalizationStrategy'] = 'Cornerstone\Http\Listener\Localization';
