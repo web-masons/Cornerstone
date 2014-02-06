@@ -147,6 +147,41 @@ class BuildVirtualHost extends EventManager\AbstractListenerAggregate implements
                 $console->writeLine($vhost_file, ColorInterface::YELLOW);
             }
 
+            if (false === is_dir($vhost_path))
+            {
+                $result = mkdir($vhost_path, 0775, true);
+
+                if (true === $result)
+                {
+                    if (true == $pEvent->getVerboseFlag())
+                    {
+                        $console->write("        [NOTICE] ", ColorInterface::LIGHT_CYAN);
+                        $console->writeLine("Vhost directory has been created.", ColorInterface::CYAN);
+                    }
+                }
+                else
+                {
+                    if (true == $pEvent->getVerboseFlag())
+                    {
+                        $console->write("       [Failure] ", ColorInterface::RED);
+                        $console->writeLine('Failed to create vhost directory, ' . $vhost_path . PHP_EOL, ColorInterface::RED);
+                    }
+
+                    throw new Exception('Failed to create vhost directory, ' . $cache_dir);
+                }
+            }
+
+            if (false === is_writable($vhost_path))
+            {
+                if (true == $pEvent->getVerboseFlag())
+                {
+                    $console->write("       [Failure] ", ColorInterface::RED);
+                    $console->writeLine("Vhost directory ($vhost_path) is not writable by web server." . PHP_EOL, ColorInterface::RED);
+                }
+
+                throw new Exception("Vhost directory ($vhost_path) is not writable by web server.");
+            }
+
             if (file_exists($vhost_file) && false === $pEvent->getForceFlag())
             {
                 if (true == $pEvent->getVerboseFlag())
@@ -158,20 +193,20 @@ class BuildVirtualHost extends EventManager\AbstractListenerAggregate implements
                     $console->writeLine('To overwrite the existing file, use --force' . PHP_EOL, ColorInterface::CYAN);
                 }
             }
-            else
+            else if (file_exists($vhost_file) && false === is_writable($vhost_file))
             {
-                if (false === is_writable($vhost_file))
+                if (true == $pEvent->getVerboseFlag())
                 {
-                    if (true == $pEvent->getVerboseFlag())
-                    {
-                        $console->write("       [Failure] ", ColorInterface::RED);
-                        $console->writeLine('Apache VHost Not Writable!' . PHP_EOL, ColorInterface::RED);
-                    }
-
-                    throw new Exception(sprintf('Virtual host file %s is not writable.', $vhost_file));
+                    $console->write("       [Failure] ", ColorInterface::RED);
+                    $console->writeLine('Apache VHost Not Writable!' . PHP_EOL, ColorInterface::RED);
                 }
 
-                $pointer = fopen($vhost_file, 'w');
+                throw new Exception(sprintf('Virtual host file %s is not writable.', $vhost_file));
+            }
+            else
+            {
+
+                $pointer = fopen($vhost_file, 'w+');
                 if ($pointer === false)
                 {
                     if (true == $pEvent->getVerboseFlag())
@@ -189,14 +224,17 @@ class BuildVirtualHost extends EventManager\AbstractListenerAggregate implements
 
                     if (true == $pEvent->getVerboseFlag())
                     {
-                        $console->write("       [Success] ", ColorInterface::LIGHT_GREEN);
+                        $console->write('       [Success] ', ColorInterface::LIGHT_GREEN);
                         $console->writeLine('VHost File Update Complete' . PHP_EOL, ColorInterface::YELLOW);
+
+                        /* adding some extra spacing for the notice outside of this if block */
+                        $console->write('        ');
                     }
 
                     $notice = $console->colorize('[NOTICE] ', ColorInterface::LIGHT_CYAN);
 
                     $response = new Response();
-                    $response->setContent($notice . ' Virtual Host file has been updated, you may need to restart/reload your web server.');
+                    $response->setContent($notice . 'Virtual Host file has been updated, you may need to restart/reload your web server.');
                     return $response;
                 }
             }
