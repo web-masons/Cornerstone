@@ -4,7 +4,7 @@
       "Server": {
         "Domain": "oakensoul"
       },
-      "Path" : "/var/www/Oakensoul/Cornerstone/vhost/"
+      "Path" : "/var/www/Oakensoul/Cornerstone/data/vhost/"
     }
   }
 }

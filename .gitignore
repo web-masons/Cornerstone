@@ -3,6 +3,6 @@
 /.settings
 /.idea
 /vendor
-/vhost
 /data/cache
+/data/vhost
 /config/autoload/local.php
