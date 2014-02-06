@@ -158,20 +158,20 @@ class BuildVirtualHost extends EventManager\AbstractListenerAggregate implements
                     $console->writeLine('To overwrite the existing file, use --force' . PHP_EOL, ColorInterface::CYAN);
                 }
             }
-            else
+            else if (file_exists($vhost_file) && false === is_writable($vhost_file))
             {
-                if (false === is_writable($vhost_file))
+                if (true == $pEvent->getVerboseFlag())
                 {
-                    if (true == $pEvent->getVerboseFlag())
-                    {
-                        $console->write("       [Failure] ", ColorInterface::RED);
-                        $console->writeLine('Apache VHost Not Writable!' . PHP_EOL, ColorInterface::RED);
-                    }
-
-                    throw new Exception(sprintf('Virtual host file %s is not writable.', $vhost_file));
+                    $console->write("       [Failure] ", ColorInterface::RED);
+                    $console->writeLine('Apache VHost Not Writable!' . PHP_EOL, ColorInterface::RED);
                 }
 
-                $pointer = fopen($vhost_file, 'w');
+                throw new Exception(sprintf('Virtual host file %s is not writable.', $vhost_file));
+            }
+            else
+            {
+
+                $pointer = fopen($vhost_file, 'w+');
                 if ($pointer === false)
                 {
                     if (true == $pEvent->getVerboseFlag())

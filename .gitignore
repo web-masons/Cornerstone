@@ -1,6 +1,8 @@
 .buildpath
 .project
 /.settings
+/.idea
 /vendor
+/vhost
 /data/cache
 /config/autoload/local.php
