@@ -5,4 +5,5 @@
 /vendor
 /data/cache
 /data/vhost
-/config/autoload/local.php
+/config/autoload/*.php
+/config/autoload/*.json
