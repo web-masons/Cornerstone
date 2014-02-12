@@ -2,7 +2,7 @@
   "Installation": {
     "Vhost": {
       "Server": {
-        "Prefix": "www.",
+        "Region": "www.",
         "Domain": "oakensoul",
         "Suffix": ".com"
       },
