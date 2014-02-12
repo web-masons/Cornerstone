@@ -2,8 +2,11 @@
   "Installation": {
     "Vhost": {
       "Server": {
+        "Prefix": "www.",
+        "Domain": "oakensoul",
         "Suffix": ".com"
-      }
+      },
+      "Path": "/etc/apache2/sites-available/"
     }
   }
 }

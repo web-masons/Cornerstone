@@ -1,9 +1,0 @@
-{
-  "Installation": {
-    "Vhost": {
-      "Server": {
-        "Prefix": "staging."
-      }
-    }
-  }
-}
