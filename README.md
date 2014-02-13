@@ -54,9 +54,9 @@ to your project's composer.json file.
 All documentation can be found in the [doc](doc) folder.
  
 ## Contributing
-* [Coding Style Guidelines](doc/CONTRIBUTING.md#coding-style-guidelines)
-* [Bug Reports](doc/CONTRIBUTING.md#bugs)
-* [Feature Requests](doc/CONTRIBUTING.md#features)
+* [Getting Started](doc/CONTRIBUTING.md)
+* [Bug Reports](doc/CONTRIBUTING.md#bug-reports)
+* [Feature Requests](doc/CONTRIBUTING.md#feature-requests)
 * [Pull Requests](doc/CONTRIBUTING.md#pull-requests)
 
 # LICENSE
