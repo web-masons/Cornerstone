@@ -36,9 +36,6 @@ class Module implements ConsoleUsageProviderInterface, AutoloaderProviderInterfa
         /* the scheme strategy handles processing based on (http|https) scheme */
         $service_manager->get('Http\SchemeStrategy')->attach($event_manager);
 
-        /* the bootstrap strategy handles setting up bootstrap and its requirements into the view renderer */
-        $service_manager->get('Http\BootstrapStrategy')->attach($event_manager);
-
         /* the theme strategy handles setting up basic head scripts and style sheets to the layout */
         $service_manager->get('Http\ThemeStrategy')->attach($event_manager);
 
@@ -117,7 +114,6 @@ class Module implements ConsoleUsageProviderInterface, AutoloaderProviderInterfa
 
         $invokables['Http\LocalizationStrategy'] = 'Cornerstone\Http\Listener\Localization';
         $invokables['Http\SchemeStrategy'] = 'Cornerstone\Http\Listener\Scheme';
-        $invokables['Http\BootstrapStrategy'] = 'Cornerstone\Http\Listener\TwitterBootstrap3';
         $invokables['Http\ThemeStrategy'] = 'Cornerstone\Http\Listener\Theme';
         $invokables['Http\ExceptionLoggerStrategy'] = 'Cornerstone\Http\Listener\ExceptionLogger';
 
