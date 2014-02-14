@@ -63,24 +63,14 @@ class Theme extends AbstractListenerAggregate
         $theme = $match->getParam('theme');
 
         /**
-         * This code basically just makes sure that when we dispatch
-         * a route the user is forced to SSL if the route is configured
-         * to enable the feature
+         * This code basically allows a very rudimentary "theme switcher". Themes
+         * can be switched via routes in the route stack.
          */
         if (false === empty($theme))
         {
             $partial = $view_helper_manager->get('partial');
 
-
-
-            // @todo should be grabbing the "layout/theme" path from config maybe?
-            // or... could allow "theme" to be the full piece from module config...
-
-            // it could be fine since we're already in the listener / strategy, and
-            // if someone doesn't like it, they can override it... think about it
-            // more when its not 1 am
-
-
+            /* the layout theme files should be placed in src/view/layout/theme/{theme}.phtml */
             $partial('layout/theme/' . $theme);
         }
     }

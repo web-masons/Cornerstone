@@ -9,7 +9,6 @@
  */
 namespace Cornerstone\Console\Listener;
 
-use Exception;
 use Zend\EventManager;
 use Zend\ServiceManager;
 use Cornerstone\EventManager\Service;
@@ -40,7 +39,7 @@ class InitializeApplication extends EventManager\AbstractListenerAggregate imple
     /**
      * Set service locator
      *
-     * @param ServiceLocatorInterface $serviceLocator
+     * @param ServiceManager\ServiceLocatorInterface $serviceLocator
      */
     public function setServiceLocator (ServiceManager\ServiceLocatorInterface $serviceLocator)
     {
@@ -50,7 +49,7 @@ class InitializeApplication extends EventManager\AbstractListenerAggregate imple
     /**
      * Get service locator
      *
-     * @return ServiceLocatorInterface
+     * @return ServiceManager\ServiceLocatorInterface
      */
     public function getServiceLocator ()
     {

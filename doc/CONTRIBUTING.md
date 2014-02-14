@@ -15,7 +15,8 @@ comes with a full set of files to start your own site. However, it is sparse
 and allows you to derive your own implementation (and rightfully so!).
 It gives you everything you need to pave your own way. 
 
-Cornerstone (and its partner [skeleton-application](https://github.com/oakensoul/application-skeleton) is a replacement (or feature extension really) for community skeleton-app.
+Cornerstone (and its partner [skeleton-application](https://github.com/oakensoul/application-skeleton)
+is a replacement (or feature extension really) for community skeleton-app.
 It provides a few pre-paved roads for you to build on because it's not meant for
 everyone out there, just the folks that like what it does and want to use it.
 
@@ -31,7 +32,7 @@ to take advantage of.
 
 The project is attempting to walk a fine line between making a lot of best practices
 easier for you while not telling you what to do and how to do it. If it's not your
-cup of tea, no hard feelings! Though feedback and constructive critisism is always
+cup of tea, no hard feelings! Though feedback and constructive criticism is always
 welcome!
 
 ## The Basics

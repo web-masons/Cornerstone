@@ -1,6 +1,6 @@
 <?php
 /**
- * Returns URL to alternate locale, or the home page if it doesn't exist
+ * Returns URL to alternate locale, or the home page if it does not exist
  *
  * @author Oakensoul (http://www.oakensoul.com/)
  * @link https://github.com/oakensoul/Cornerstone for the canonical source repository

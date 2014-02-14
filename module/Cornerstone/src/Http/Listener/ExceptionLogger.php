@@ -9,11 +9,9 @@
  */
 namespace Cornerstone\Http\Listener;
 
-use Exception;
 use Zend\EventManager\EventManagerInterface;
-use Zend\Mvc\MvcEvent;
+use Zend\Mvc;
 use Zend\EventManager\AbstractListenerAggregate;
-use Locale;
 use Zend\Console;
 
 class ExceptionLogger extends AbstractListenerAggregate
@@ -31,31 +29,34 @@ class ExceptionLogger extends AbstractListenerAggregate
         $options[] = $this;
         $options[] = 'onDispatchError';
 
-        $this->listeners[] = $events->attach(MvcEvent::EVENT_DISPATCH_ERROR, $options, 100);
+        $this->listeners[] = $events->attach(Mvc\MvcEvent::EVENT_DISPATCH_ERROR, $options, 100);
     }
 
-    public function onDispatchError (MvcEvent $pEvent)
+    /**
+     * When ZF2 encounters an unhandled exception, it will return a 500
+     * and potentially write it to the screen. However, it never makes
+     * it into the apache error logs (and it really should).
+     *
+     * @param Mvc\MvcEvent $pEvent
+     * @return null
+     */
+    public function onDispatchError (Mvc\MvcEvent $pEvent)
     {
         $request = $pEvent->getRequest();
 
         // Make sure that we are not running in a console
         if ($request instanceof Console\Request)
         {
-            return;
+            return NULL;
         }
 
         /** bail out if we're not processing an exception */
-        if (\Zend\Mvc\Application::ERROR_EXCEPTION != $pEvent->getError())
+        if (Mvc\Application::ERROR_EXCEPTION != $pEvent->getError())
         {
-            return;
+            return NULL;
         }
 
         $e = $pEvent->getParam('exception');
         error_log($e->getMessage(), E_USER_ERROR);
-
-        /** I need to set up a zend logger default strategy */
-//         $service_manager = $pEvent->getApplication()->getServiceManager();
-//         $logger = $service_manager->get('Logger\General');
-//         $logger->LogException($e);
     }
 }

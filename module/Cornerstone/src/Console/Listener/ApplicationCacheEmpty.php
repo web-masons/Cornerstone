@@ -68,7 +68,6 @@ class ApplicationCacheEmpty extends EventManager\AbstractListenerAggregate imple
                 }
 
                 throw new Exception('Application config error, module_listener_options, does not exist. Directory empty failed!');
-                return;
             }
 
             if (false === array_key_exists('cache_dir', $config['module_listener_options']))
@@ -80,7 +79,6 @@ class ApplicationCacheEmpty extends EventManager\AbstractListenerAggregate imple
                 }
 
                 throw new Exception('Application config error, module_listener_options, does not contain a "cache_dir" entry!');
-                return;
             }
 
             $cache_dir = $config['module_listener_options']['cache_dir'];
@@ -113,6 +111,7 @@ class ApplicationCacheEmpty extends EventManager\AbstractListenerAggregate imple
 
             foreach (new RecursiveIteratorIterator($iterator, RecursiveIteratorIterator::CHILD_FIRST) as $path)
             {
+                /* @var RecursiveDirectoryIterator $path */
                 if (true == $pEvent->getVerboseFlag())
                 {
                     $console->write("        [NOTICE] ", ColorInterface::LIGHT_CYAN);
@@ -127,6 +126,8 @@ class ApplicationCacheEmpty extends EventManager\AbstractListenerAggregate imple
                 $console->write("       [Success] ", ColorInterface::GREEN);
                 $console->writeLine("Application cache folder ($cache_dir) has been emptied." . PHP_EOL);
             }
+
+            return NULL;
         }
         catch (Exception $e)
         {
@@ -140,7 +141,7 @@ class ApplicationCacheEmpty extends EventManager\AbstractListenerAggregate imple
     /**
      * Set service locator
      *
-     * @param ServiceLocatorInterface $serviceLocator
+     * @param ServiceManager\ServiceLocatorInterface $serviceLocator
      */
     public function setServiceLocator (ServiceManager\ServiceLocatorInterface $serviceLocator)
     {
@@ -150,7 +151,7 @@ class ApplicationCacheEmpty extends EventManager\AbstractListenerAggregate imple
     /**
      * Get service locator
      *
-     * @return ServiceLocatorInterface
+     * @return ServiceManager\ServiceLocatorInterface
      */
     public function getServiceLocator ()
     {
