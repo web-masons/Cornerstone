@@ -9,7 +9,6 @@
  */
 namespace Cornerstone\Http\Listener;
 
-use Exception;
 use Zend\EventManager\EventManagerInterface;
 use Zend\Mvc\MvcEvent;
 use Zend\EventManager\AbstractListenerAggregate;
@@ -42,10 +41,10 @@ class Localization extends AbstractListenerAggregate
         // Make sure that we are not running in a console
         if ($request instanceof Console\Request)
         {
-            return;
+            return NULL;
         }
 
-        /* @var $match RouteMatch */
+        /* @var \Zend\Mvc\Router\RouteMatch $match */
         $match = $pEvent->getRouteMatch();
 
         /* locale selected */
@@ -72,7 +71,7 @@ class Localization extends AbstractListenerAggregate
 
             $url = $router->assemble($params, $options);
 
-            /* @var $response Response */
+            /* @var \Zend\Http\PhpEnvironment\Response $response */
             $response = $pEvent->getResponse();
 
             $response->setStatusCode(302);
@@ -87,5 +86,7 @@ class Localization extends AbstractListenerAggregate
         }
 
         Locale::setDefault($lang_selected);
+
+        return NULL;
     }
 }

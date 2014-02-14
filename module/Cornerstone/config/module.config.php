@@ -219,13 +219,18 @@ $navigation = array(
 
 $installation = array();
 
+$installation['Vhost'] = array (
+    'ApacheLog' => '${APACHE_LOG_DIR}',
+    'UseSysLog' => true
+);
+
 $installation['Vhost']['Server'] = array(
     'Domain' => 'cornerstone',
     'Prefix' => '',
     'Suffix' => '.com',
     'Region' => 'www.',
     'Extension' => 'vhost',
-    'PublicFolder' => 'public',
+    'PublicFolder' => 'public/',
     'Path' => '/etc/apache2/sites-available/'
 );
 

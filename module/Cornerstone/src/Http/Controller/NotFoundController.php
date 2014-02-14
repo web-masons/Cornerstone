@@ -16,6 +16,10 @@ class NotFoundController extends AbstractActionController
 
     public function indexAction ()
     {
-        $this->getResponse()->setStatusCode(404);
+        /* @var \Zend\Http\Response $response */
+        $response = $this->getResponse();
+        $response->setStatusCode(404);
+
+        return $response;
     }
 }
