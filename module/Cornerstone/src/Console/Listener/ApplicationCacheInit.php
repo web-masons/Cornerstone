@@ -16,9 +16,6 @@ use Zend\EventManager;
 use Zend\Console\ColorInterface;
 use Zend\Console\Response;
 use Zend\ServiceManager;
-use RecursiveIteratorIterator;
-use RecursiveDirectoryIterator;
-use FilesystemIterator;
 
 class ApplicationCacheInit extends EventManager\AbstractListenerAggregate implements ServiceManager\ServiceLocatorAwareInterface
 {
@@ -68,7 +65,7 @@ class ApplicationCacheInit extends EventManager\AbstractListenerAggregate implem
                     $console->writeLine("Skipping creation of application cache folder." . PHP_EOL, ColorInterface::CYAN);
                 }
 
-                return;
+                return NULL;
             }
 
             if (false === array_key_exists('cache_dir', $config['module_listener_options']))
@@ -80,7 +77,6 @@ class ApplicationCacheInit extends EventManager\AbstractListenerAggregate implem
                 }
 
                 throw new Exception('Application config error, module_listener_options, does not contain a "cache_dir" entry!');
-                return;
             }
 
             $cache_dir = $config['module_listener_options']['cache_dir'];
@@ -131,6 +127,8 @@ class ApplicationCacheInit extends EventManager\AbstractListenerAggregate implem
                 $console->write("       [Success] ", ColorInterface::GREEN);
                 $console->writeLine("Application cache folder ($cache_dir) exists and is writable." . PHP_EOL);
             }
+
+            return NULL;
         }
         catch (Exception $e)
         {
@@ -144,7 +142,7 @@ class ApplicationCacheInit extends EventManager\AbstractListenerAggregate implem
     /**
      * Set service locator
      *
-     * @param ServiceLocatorInterface $serviceLocator
+     * @param ServiceManager\ServiceLocatorInterface $serviceLocator
      */
     public function setServiceLocator (ServiceManager\ServiceLocatorInterface $serviceLocator)
     {
@@ -154,7 +152,7 @@ class ApplicationCacheInit extends EventManager\AbstractListenerAggregate implem
     /**
      * Get service locator
      *
-     * @return ServiceLocatorInterface
+     * @return ServiceManager\ServiceLocatorInterface
      */
     public function getServiceLocator ()
     {

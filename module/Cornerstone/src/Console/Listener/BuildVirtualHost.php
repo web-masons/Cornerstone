@@ -19,7 +19,6 @@ use Zend\View\Renderer\PhpRenderer;
 use Zend\Console\ColorInterface;
 use Zend\View\Model\ViewModel;
 use Zend\Console\Response;
-use Zend\Config\Config;
 
 class BuildVirtualHost extends EventManager\AbstractListenerAggregate implements ServiceManager\ServiceLocatorAwareInterface
 {
@@ -48,7 +47,6 @@ class BuildVirtualHost extends EventManager\AbstractListenerAggregate implements
             $console = $this->getServiceLocator()->get('console');
 
             $config = $this->getServiceLocator()->get('Config');
-            $config = new Config($config);
 
             if (true == $pEvent->getVerboseFlag())
             {
@@ -72,49 +70,49 @@ class BuildVirtualHost extends EventManager\AbstractListenerAggregate implements
             $view = new ViewModel();
             $view->setTemplate($this->mTemplateKey);
 
-            $prefix = $config->Installation->Vhost->Server->get('Prefix', '');
-            $region = $config->Installation->Vhost->Server->get('Region', 'www.');
-            $domain = $config->Installation->Vhost->Server->get('Domain', 'mogwai-zf2');
-            $suffix = $config->Installation->Vhost->Server->get('Suffix', '.com');
-            $view->ServerName = $prefix . $region . $domain . $suffix;
+            $vhost_config = $config['Installation']['Vhost'];
+            $server = $vhost_config['Server'];
+            $prefix = $server['Prefix'];
+            $region = $server['Region'];
+            $domain = $server['Domain'];
+            $suffix = $server['Suffix'];
+            $view->setVariable('ServerName', $prefix . $region . $domain . $suffix);
 
-            $public = $config->Installation->Vhost->Server->get('PublicFolder', 'public');
-            $view->DocumentRoot = getcwd() . "/$public/";
-            $view->ApplicationEnv = $pEvent->getEnvironment();
-            $view->Config = $config->Installation->get('Vhost', array ());
+            $public = $server['PublicFolder'];
+
+            $view->setVariable('DocumentRoot', getcwd() . '/' . $public);
+            $view->setVariable('ApplicationEnv', $pEvent->getEnvironment());
+            $view->setVariable('Config', $vhost_config);
 
             if (true == $pEvent->getVerboseFlag())
             {
                 $console->write("   [Server Name] ");
-                $console->writeLine($view->ServerName, ColorInterface::YELLOW);
+                $console->writeLine($view->getVariable('ServerName'), ColorInterface::YELLOW);
 
                 $console->write(" [Document Root] ");
-                $console->writeLine($view->DocumentRoot, ColorInterface::YELLOW);
+                $console->writeLine($view->getVariable('DocumentRoot'), ColorInterface::YELLOW);
 
                 $console->write("   [Environment] ");
-                $console->writeLine($view->ApplicationEnv, ColorInterface::YELLOW);
+                $console->writeLine($view->getVariable('ApplicationEnv'), ColorInterface::YELLOW);
             }
 
             // setup specific configurations
-            $view->ApacheLogDir = $config->Installation->Vhost->get('ApacheLog', '${APACHE_LOG_DIR}');
-            $view->UseSyslog = $config->Installation->Vhost->get('UseSyslog', true);
+            $view->setVariable('ApacheLogDir', $vhost_config['ApacheLog']);
+            $view->setVariable('UseSyslog', $vhost_config['UseSysLog']);
+            $view->setVariable('Ports', $vhost_config['Ports']);
+            $view->setVariable('CorsOrigin', false);
 
-            $view->Ports = $config->Installation->Vhost->get('Ports', array ());
-
-            $view->CorsOrigin = false;
-            if ($config->Installation->get('CorsOrigin', false))
+            if ( array_key_exists('CorsOrigin', $config['Installation'] ) )
             {
-                $cors = $config->Installation->get('CorsOrigin', false);
+                $cors = $config['Installation']['CorsOrigin'];
 
-                if (is_object($cors))
-                {
-                    $origin_list = implode('|', $cors->toArray());
-                    $view->CorsOrigin = 'http(s)?://(' . $origin_list . ')';
-                }
-                else
+                if ( false === is_array($cors))
                 {
                     throw new Exception('CorsOrigin configuration must be an array.');
                 }
+
+                $origin_list = implode('|', $cors);
+                $view->setVariable('CorsOrigin', 'http(s)?://(' . $origin_list . ')');
             }
 
             /**
@@ -124,7 +122,7 @@ class BuildVirtualHost extends EventManager\AbstractListenerAggregate implements
              * template like an ordinary template, so that we can get back its
              * contents
              */
-            $map = new TemplateMapResolver($config->view_manager->template_map);
+            $map = new TemplateMapResolver($config['view_manager']['template_map']);
             $renderer = new PhpRenderer();
             $renderer->setResolver($map);
 
@@ -135,10 +133,10 @@ class BuildVirtualHost extends EventManager\AbstractListenerAggregate implements
             }
 
             // write the vhost file here....
-            $vhost_extension = $config->Installation->Vhost->get('Extension', 'vhost');
-            $vhost_path = $config->Installation->Vhost->get('Path', '/etc/apache2/sites-available/');
+            $vhost_extension = $server['Extension'];
+            $vhost_path = $server['Path'];
 
-            $vhost_filename = $region . $domain . '.com' . '.' . $vhost_extension;
+            $vhost_filename = $view->getVariable('ServerName') . '.' . $vhost_extension;
             $vhost_file = $vhost_path . $vhost_filename;
 
             if (true == $pEvent->getVerboseFlag())
@@ -167,7 +165,7 @@ class BuildVirtualHost extends EventManager\AbstractListenerAggregate implements
                         $console->writeLine('Failed to create vhost directory, ' . $vhost_path . PHP_EOL, ColorInterface::RED);
                     }
 
-                    throw new Exception('Failed to create vhost directory, ' . $cache_dir);
+                    throw new Exception('Failed to create vhost directory, ' . $vhost_path);
                 }
             }
 
@@ -238,6 +236,8 @@ class BuildVirtualHost extends EventManager\AbstractListenerAggregate implements
                     return $response;
                 }
             }
+
+            return NULL;
         }
         catch (Exception $e)
         {
@@ -251,7 +251,7 @@ class BuildVirtualHost extends EventManager\AbstractListenerAggregate implements
     /**
      * Set service locator
      *
-     * @param ServiceLocatorInterface $serviceLocator
+     * @param ServiceManager\ServiceLocatorInterface $serviceLocator
      */
     public function setServiceLocator (ServiceManager\ServiceLocatorInterface $serviceLocator)
     {
@@ -261,7 +261,7 @@ class BuildVirtualHost extends EventManager\AbstractListenerAggregate implements
     /**
      * Get service locator
      *
-     * @return ServiceLocatorInterface
+     * @return ServiceManager\ServiceLocatorInterface
      */
     public function getServiceLocator ()
     {

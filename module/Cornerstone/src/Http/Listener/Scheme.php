@@ -9,13 +9,10 @@
  */
 namespace Cornerstone\Http\Listener;
 
-use Exception;
 use Zend\EventManager\EventManagerInterface;
 use Zend\Mvc\MvcEvent;
 use Zend\EventManager\AbstractListenerAggregate;
-use Zend\Console;
-use Zend\Mvc\Router\Console\RouteMatch;
-use Zend\Http\PhpEnvironment\Response;
+use Zend\Http\PhpEnvironment\Request;
 
 class Scheme extends AbstractListenerAggregate
 {
@@ -42,35 +39,35 @@ class Scheme extends AbstractListenerAggregate
         $request = $pEvent->getRequest();
 
         // Make sure that we are not running in a console
-        if ($request instanceof Console\Request)
+        if ($request instanceof Request)
         {
-            return;
-        }
+            /* @var \Zend\Mvc\Router\Http\RouteMatch $match */
+            $match = $pEvent->getRouteMatch();
 
-        /* @var $match RouteMatch */
-        $match = $pEvent->getRouteMatch();
-
-        /**
-         * This code basically just makes sure that when we dispatch
-         * a route the user is forced to SSL if the route is configured
-         * to enable the feature
-         */
-        if (true === $match->getParam('force_https_scheme', false))
-        {
-            $uri = $request->getUri();
-
-            if ($uri->getScheme() !== "https")
+            /**
+             * This code basically just makes sure that when we dispatch
+             * a route the user is forced to SSL if the route is configured
+             * to enable the feature
+             */
+            if (true === $match->getParam('force_https_scheme', false))
             {
-                $uri->setScheme('https');
+                $uri = $request->getUri();
 
-                /* @var $response Response */
-                $response = $pEvent->getResponse();
+                if ($uri->getScheme() !== "https")
+                {
+                    $uri->setScheme('https');
 
-                $response->setStatusCode(302);
-                $response->getHeaders()->addHeaderLine('Location', $uri);
-                $response->sendHeaders();
-                return $response;
+                    /* @var \Zend\Http\PhpEnvironment\Response $response */
+                    $response = $pEvent->getResponse();
+
+                    $response->setStatusCode(302);
+                    $response->getHeaders()->addHeaderLine('Location', $uri);
+                    $response->sendHeaders();
+                    return $response;
+                }
             }
         }
+
+        return NULL;
     }
 }

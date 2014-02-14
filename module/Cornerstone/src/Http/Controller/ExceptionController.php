@@ -9,6 +9,7 @@
  */
 namespace Cornerstone\Http\Controller;
 
+use Exception;
 use Zend\Mvc\Controller\AbstractActionController;
 
 class ExceptionController extends AbstractActionController
@@ -16,6 +17,6 @@ class ExceptionController extends AbstractActionController
 
     public function indexAction ()
     {
-        throw new \Exception('This is an example exception.');
+        throw new Exception('This is an example exception.');
     }
 }

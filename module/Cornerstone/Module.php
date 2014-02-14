@@ -50,7 +50,7 @@ class Module implements ConsoleUsageProviderInterface, AutoloaderProviderInterfa
 
         /* attach our CLI strategies */
         $service_manager->get('Console\InitializeApplicationStrategy')->attach($cornerstone_event_manager);
-        $service_manager->get('Console\BuildVirtualHostostStrategy')->attach($cornerstone_event_manager);
+        $service_manager->get('Console\BuildVirtualHostStrategy')->attach($cornerstone_event_manager);
         $service_manager->get('Console\ApplicationCacheInitStrategy')->attach($cornerstone_event_manager);
         $service_manager->get('Console\ApplicationCacheEmptyStrategy')->attach($cornerstone_event_manager);
     }
@@ -123,7 +123,7 @@ class Module implements ConsoleUsageProviderInterface, AutoloaderProviderInterfa
 
         $invokables['Application\EventManager'] = 'Cornerstone\EventManager\Service';
 
-        $invokables['Console\BuildVirtualHostostStrategy'] = 'Cornerstone\Console\Listener\BuildVirtualHost';
+        $invokables['Console\BuildVirtualHostStrategy'] = 'Cornerstone\Console\Listener\BuildVirtualHost';
         $invokables['Console\ApplicationCacheInitStrategy'] = 'Cornerstone\Console\Listener\ApplicationCacheInit';
         $invokables['Console\ApplicationCacheEmptyStrategy'] = 'Cornerstone\Console\Listener\ApplicationCacheEmpty';
         $invokables['Console\InitializeApplicationStrategy'] = 'Cornerstone\Console\Listener\InitializeApplication';

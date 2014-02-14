@@ -13,11 +13,13 @@ use Cornerstone\EventManager;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Console\ColorInterface;
 use Zend\Console;
-use Exception;
 use Zend\Console\Response;
 
 class ApplicationController extends AbstractActionController
 {
+    protected $mEventManager;
+
+    protected $mConsole;
 
     protected $mForce = false;
 
@@ -28,27 +30,6 @@ class ApplicationController extends AbstractActionController
     protected $mEvent;
 
     protected $mAction;
-
-    /**
-     * these should be treated as a bitmask, numbers should go in bit math sequence
-     * i.e.
-     * 1, 2, 4, 8, ...
-     *
-     * @todo However, now that i'm switching everything over to be event driven... this
-     *       won't work as well, I need to figure out another solution...
-     *
-     *       My current thoughts are that when I have time I'll create an invokable
-     *       service that will allow the various listeners to register the error
-     *       states they care about and the service itself will handle taking
-     *       those registered errors and assigning them an appropriate bitmask
-     *       structure. I'm a bit worried that this will be rather dynamic and
-     *       could cause issues... thus I haven't implemented it yet.
-     *
-     *       const ERROR_UNDEFINED = 1;
-     *       const ERROR_LISTENER_OPTIONS_NOT_CONFIGURED = 2;
-     *       const ERROR_FAILED_TO_CREATE_CACHE_FOLDER = 4;
-     *       const ERROR_CACHE_FOLDER_NOT_WRITABLE = 8;
-     */
 
     /**
      * This action handles console requests to the Application.
@@ -115,8 +96,6 @@ class ApplicationController extends AbstractActionController
 
         $event_result = $this->EventManager()->trigger($event);
 
-        $errors_encountered = false;
-
         $response = new Response();
         $response->setErrorLevel(0);
 
@@ -124,6 +103,7 @@ class ApplicationController extends AbstractActionController
         {
             if (is_object($result))
             {
+                /* @var Response $result */
                 if (0 < $result->getErrorLevel())
                 {
                     $this->mConsole->write("[Error] ", ColorInterface::RED);
@@ -178,7 +158,7 @@ class ApplicationController extends AbstractActionController
     /**
      * Returns the Cornerstone Event Manger Service for logging functionality
      *
-     * @return Cornerstone\EventManager\Service
+     * @return EventManager\Service
      */
     protected function EventManager ()
     {
