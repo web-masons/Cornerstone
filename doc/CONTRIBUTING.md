@@ -13,7 +13,7 @@ Framework. If you have worked with ZF2 at all, you will know that there is alrea
 a great skeleton application provided by the ZF2 community. That skeleton application
 comes with a full set of files to start your own site. However, it is sparse
 and allows you to derive your own implementation (and rightfully so!).
-It gives you everything you need to pave your own way. 
+It gives you everything you need to pave your own way.
 
 Cornerstone (and its partner [skeleton-application](https://github.com/oakensoul/application-skeleton)
 is a replacement (or feature extension really) for community skeleton-app.
@@ -105,7 +105,7 @@ included in the project:
    # Navigate to the newly cloned directory
    cd Cornerstone
    # Assign the original repo to a remote called "upstream"
-   git remote add upstream https://github.com/oakensoul/Cornerstone
+   git remote add upstream https://github.com/web-masons/Cornerstone
    ```
 
 2. If you cloned a while ago, get the latest changes from upstream:
