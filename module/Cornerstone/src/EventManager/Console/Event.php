@@ -1,10 +1,11 @@
 <?php
 /**
- * Zend Framework (http://framework.zend.com/)
  *
- * @link http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
- * @license http://framework.zend.com/license/new-bsd New BSD License
+ * @author    Oakensoul (http://www.oakensoul.com/)
+ * @link      https://github.com/web-masons/Cornerstone for the canonical source repository
+ * @copyright Copyright (c) 2013, github.com/web-masons Contributors
+ * @license   http://opensource.org/licenses/Apache-2.0 Apache-2.0-Clause
+ * @package   Cornerstone
  */
 namespace Cornerstone\EventManager\Console;
 
