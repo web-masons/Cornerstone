@@ -56,7 +56,7 @@ All documentation can be found in the [doc](doc) folder.
 ## Contributors
 
 Collaborators:
-* @Oakensoul
+* [@Oakensoul](https://github.com/oakensoul)
 
 
 ## Contributing
