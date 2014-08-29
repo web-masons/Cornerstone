@@ -25,15 +25,15 @@ packaged composer.json file.
 
 ### Creating a new Site using Cornerstone
 It is recommended that any site built to use Cornerstone be built on
-my [application skeleton](https://github.com/oakensoul/application-skeleton)
-from [Packagist](https://packagist.org/packages/oakensoul/application-skeleton).
+the Cornerstone [application blueprint](https://github.com/web-masons/application-blueprint)
+from [Packagist](https://packagist.org/packages/web-masons/application-blueprint).
 
 ```
-composer create-project oakensoul/application-skeleton
+composer create-project web-masons/application-blueprint
 ```
 
 ### Adding Cornerstone to your existing project
-If you are not using the application-skeleton above, then you should be
+If you are not using the application-blueprint above, then you should be
 composing in Cornerstone. To do so, add lines similar to the following
 to your project's composer.json file.
 
@@ -41,12 +41,12 @@ to your project's composer.json file.
 "require": {
     "php": ">=5.4",
     "zendframework/zendframework": ">=2.2",
-    "oakensoul/Cornerstone" : "0.*",
+    "web-masons/Cornerstone" : "0.*",
 },
 
 "repositories": [ {
     "type": "vcs",
-    "url": "https://github.com/oakensoul/Cornerstone"
+    "url": "https://github.com/web-masons/Cornerstone"
 }],
 
 ```
