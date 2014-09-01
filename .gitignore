@@ -7,3 +7,10 @@
 /data/vhost
 /config/autoload/*.php
 /config/autoload/*.json
+.DS_Store
+.data/
+.sass-cache/
+.casperjsrc.js
+node_modules/
+public/cat/
+npm-debug.log

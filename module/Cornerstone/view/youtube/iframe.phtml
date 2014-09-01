@@ -1,0 +1,14 @@
+<?php
+/**
+ * YouTube iframe partial
+ *
+ * Parameters:
+ *   video_id: string
+ *   css_classes: string or array of strings
+ *   width: string, e.g., 100%, 513
+ *   height: string, e.g., 100%, 412
+ *   youtube_url: string, URL for the video
+ *   query_string: string
+ */
+?>
+<iframe id="youtube-<?php echo $this->video_id; ?>"<?php if(!empty($this->css_classes)) { ?> class="<?php echo $this->css_classes; ?>"<?php } ?> type="text/html"<?php if(!empty($this->width)) { ?> width="<?echo $this->width; ?>"<?php } if(!empty($this->height)) { ?> height="<?echo $this->height; ?>"<?php } ?> src="<?echo $this->youtube_url; if(!empty($query_string)) { ?>?<?php echo $query_string; }?>" allowfullscreen frameborder="0"></iframe>

@@ -28,11 +28,12 @@
   SSLCertificateKeyFile <?php echo $host['SSLKey'] . PHP_EOL; ?>
 
 <?php endif; ?>
-  <IfModule mod_security.c>
-    <LocationMatch .*>
-      SecRuleEngine DetectionOnly
-    </LocationMatch>
+  <IfModule mod_security2.c>
+
+    <?php echo $this->ModSecRules; ?>
+
   </IfModule>
+
 
   # add MIME encoding for web fonts
   AddType application/vnd.ms-fontobject .eot
@@ -53,12 +54,19 @@
 
     RewriteEngine On
 
+  <?php echo $this->RewritePreRules; ?>
+
     # The following rule tells Apache that if the requested filename
     # exists, simply serve it.
     RewriteCond %{REQUEST_FILENAME} -s [OR]
     RewriteCond %{REQUEST_FILENAME} -l [OR]
     RewriteCond %{REQUEST_FILENAME} -d
     RewriteRule ^.*$ - [NC,L]
+
+  <?php if (isset($this->Config['StripTrailingSlash']) && $this->Config['StripTrailingSlash'] === true) : ?>
+  # Remove trailing slash from URL
+  RewriteRule ^(.+)/$  /$1 [R=301,L]
+  <?php endif; ?>
 
     # The following rewrites all other queries to index.php. The
     # condition ensures that if you are using Apache aliases to do
@@ -69,6 +77,8 @@
     RewriteCond %{REQUEST_URI}::$1 ^(/.+)(.+)::\2$
     RewriteRule ^(.*) - [E=BASE:%1]
     RewriteRule ^(.*)$ %{ENV:BASE}index.php [NC,L]
+
+  <?php echo $this->RewritePostRules; ?>
 
 <?php if ( false !== $this->CorsOrigin ) : ?>
     # allow cross origin resource sharing (CORS)
