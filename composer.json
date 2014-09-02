@@ -1,7 +1,7 @@
 {
     "name": "web-masons/Cornerstone",
     "description": "Cornerstone ZF2 base application Module",
-    "license": "BSD-2",
+    "license": "Apache-2.0",
     "keywords": [
         "framework",
         "zf2",

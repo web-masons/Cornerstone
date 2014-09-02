@@ -14,14 +14,18 @@ $this->headTitle()->setAutoEscape(false);
 $this->headMeta()->appendName('viewport', 'width=device-width, initial-scale=1.0');
 $this->headMeta()->setCharset("utf-8");
 
-$link = array();
-$link['rel'] = 'stylesheet';
-$link['href'] = '/theme/default/css/main.css';
-$link['type'] = 'text/css';
-$link['media'] = 'screen';
-$this->headLink($link, 'APPEND');
+// I'm still not 100% sold that I even want to keep the theme system. I think I do, just for
+// ease of implementing things like site wrap take-overs but i'm just not sure.
 
 $link = array();
-$link['rel'] = 'shortcut icon';
-$link['href'] = '/theme/default/img/favicon.png';
+$link['rel'] = 'stylesheet';
+$link['type'] = 'text/css';
+$link['media'] = 'screen';
+$link['href'] = 'https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css';
 $this->headLink($link, 'APPEND');
+
+$link['href'] = 'https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css';
+$this->headLink($link, 'APPEND');
+
+$this->inlinescript()->appendFile('https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js', 'text/javascript');
+$this->inlinescript()->appendFile('https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js', 'text/javascript');
