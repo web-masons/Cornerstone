@@ -15,7 +15,7 @@ boxes = {
       'cornerstone-vagrant' => {
         'project' => 'cornerstone',
         'environment' => 'vagrant',
-        'siteslug' => 'cornerstone'
+        'siteslug' => 'www.cornerstone'
       }
     }
   }
