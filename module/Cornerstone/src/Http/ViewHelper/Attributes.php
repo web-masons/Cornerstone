@@ -4,7 +4,7 @@
  * View Helper - Adds attributes to specific tags so views can modify the attributes on tags in the layout
  *
  */
-namespace Cornersteon\Http\ViewHelper;
+namespace Cornerstone\Http\ViewHelper;
 
 use Zend\View\Helper\AbstractHelper;
 
