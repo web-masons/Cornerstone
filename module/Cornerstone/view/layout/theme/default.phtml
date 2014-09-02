@@ -14,14 +14,19 @@ $this->headTitle()->setAutoEscape(false);
 $this->headMeta()->appendName('viewport', 'width=device-width, initial-scale=1.0');
 $this->headMeta()->setCharset("utf-8");
 
-$link = array();
-$link['rel'] = 'stylesheet';
-$link['href'] = '/theme/default/css/main.css';
-$link['type'] = 'text/css';
-$link['media'] = 'screen';
-$this->headLink($link, 'APPEND');
-
-$link = array();
-$link['rel'] = 'shortcut icon';
-$link['href'] = '/theme/default/img/favicon.png';
-$this->headLink($link, 'APPEND');
+// Normally the "theme" would do something like this. I'm not sure if I even want
+// to keep this or not so i'm commenting it out.
+//
+// For now it won't hurt anything as it's basically just setting some defaults.
+//
+//$link = array();
+//$link['rel'] = 'stylesheet';
+//$link['href'] = '/theme/default/css/main.css';
+//$link['type'] = 'text/css';
+//$link['media'] = 'screen';
+//$this->headLink($link, 'APPEND');
+//
+//$link = array();
+//$link['rel'] = 'shortcut icon';
+//$link['href'] = '/theme/default/img/favicon.png';
+//$this->headLink($link, 'APPEND');
