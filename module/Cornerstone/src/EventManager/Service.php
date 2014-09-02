@@ -20,7 +20,6 @@ class Service extends EventManager\EventManager
     const EVENT_APPLICATION_CACHE_EMPTY = 'ApplicationCacheEmpty';
     const EVENT_APPLICATION_BUILD_VHOST = 'ApplicationBuildVhost';
     const EVENT_APPLICATION_CASPER = 'ApplicationCasper';
-    const EVENT_APPLICATION_GRUNT_INIT = 'ApplicationGruntInit';
 
     const EVENT_TRACKING_CONFIGURATION_NOT_SET = 'TrackingConfigurationNotSet';
     const EVENT_GA_CONFIGURATION_NOT_SET = 'GoogleAnalyticsConfigurationNotSet';

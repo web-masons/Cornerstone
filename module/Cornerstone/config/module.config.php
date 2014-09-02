@@ -211,30 +211,6 @@ $console = array(
               )
             )
           ),
-
-          'application-init-grunt' => array(
-            'options' => array(
-              'route' => 'grunt init (all|gruntfile|package-json):option [--force] [--verbose]',
-              'defaults' => array(
-                'controller' => 'Console\Controller\Application',
-                'action' => 'event',
-                'event' => Cornerstone\EventManager\Service::EVENT_APPLICATION_GRUNT_INIT,
-                'installer-route' => true
-              )
-            )
-          ),
-
-          'application-grunt-init' => array(
-            'options' => array(
-              'route' => 'application grunt-init (all|gruntfile|package-json):option [--force] [--verbose]',
-              'defaults' => array(
-                'controller' => 'Console\Controller\Application',
-                'action' => 'event',
-                'event' => Cornerstone\EventManager\Service::EVENT_APPLICATION_GRUNT_INIT,
-                'installer-route' => true
-              )
-            )
-          )
         )
     )
 );
