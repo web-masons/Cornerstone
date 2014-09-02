@@ -39,7 +39,7 @@ class GoogleAnalytics extends AbstractHelper implements ServiceLocatorAwareInter
     {
       $data = array ( 'mPropertyId' => $this->mPropertyId, 'mDomain' => $this->mDomain );
 
-      $response = $this->getView()->partial('layout/partials/google-analytics', $data);
+      $response = $this->getView()->partial('layout/partials/site/google-analytics', $data);
     }
 
     return $response;
