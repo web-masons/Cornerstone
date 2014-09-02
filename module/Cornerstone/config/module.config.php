@@ -119,8 +119,6 @@ $view_manager = array(
         'application/vhost/rewrite/rules/pre' => __DIR__ . '/../view/console/application/partials/rewrite-pre-rules.phtml',
         'application/vhost/rewrite/rules/post' => __DIR__ . '/../view/console/application/partials/rewrite-post-rules.phtml',
         'application/vhost/modsec' => __DIR__ . '/../view/console/application/partials/modsec-rules.phtml',
-        'grunt/gruntfile' => __DIR__ . '/../view/console/grunt/gruntfile.tpl',
-        'grunt/package-json' => __DIR__ . '/../view/console/grunt/package-json.tpl',
         'casper/casper' => __DIR__ . '/../view/console/casper/casper.tpl',
     ),
     'template_path_stack' => array(
