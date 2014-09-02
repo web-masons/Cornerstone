@@ -14,3 +14,4 @@
 node_modules/
 public/cat/
 npm-debug.log
+.npm-debug.log.swp
