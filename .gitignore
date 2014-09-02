@@ -1,9 +1,11 @@
 .buildpath
+.idea
 .project
-/.settings
-/.idea
-/vendor
-/data/cache
-/data/vhost
+.vagrant
+.settings
 /config/autoload/*.php
 /config/autoload/*.json
+/cookbooks
+/data/cache
+/data/vhost
+/vendor
