@@ -1,0 +1,12 @@
+{
+  "Installation": {
+    "Vhost": {
+      "Server": {
+        "Region": "vagrant.www.",
+        "Domain": "cornerstone",
+        "Suffix": ".com"
+      },
+      "Path": "/etc/apache2/sites-available/"
+    }
+  }
+}
