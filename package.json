@@ -1,9 +1,0 @@
-{
-    "name": "cornerstone",
-    "private":true,
-    "version": "1.0.0",
-    "dependencies":
-    {
-      "cornerstone-grunt": "git+ssh://git@github.com:web-masons/cornerstone-grunt.git#master"
-    }
-}
