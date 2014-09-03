@@ -24,6 +24,9 @@ class BuildVirtualHost extends EventManager\AbstractListenerAggregate implements
 {
 
     protected $mTemplateKey = 'application/vhost';
+    protected $mRewriteRulesPreTemplateKey = 'application/vhost/rewrite/rules/pre';
+    protected $mRewriteRulesPostTemplateKey = 'application/vhost/rewrite/rules/post';
+    protected $mModsecTemplateKey = 'application/vhost/modsec';
 
     protected $mServiceLocator;
 
@@ -65,6 +68,19 @@ class BuildVirtualHost extends EventManager\AbstractListenerAggregate implements
                 $console->write("  [Template Key] ");
                 $console->writeLine($this->mTemplateKey, ColorInterface::YELLOW);
             }
+
+            // Rewrite rule additions
+            $rewritePreView = new ViewModel();
+            $rewritePreView->setTemplate($this->mRewriteRulesPreTemplateKey);
+            $rewritePreView->Config = $config->Installation->get('Vhost', array ());
+
+            $rewritePostView = new ViewModel();
+            $rewritePostView->setTemplate($this->mRewriteRulesPostTemplateKey);
+            $rewritePostView->Config = $config->Installation->get('Vhost', array ());
+
+            $modSec = new ViewModel();
+            $modSec->setTemplate($this->mModsecTemplateKey);
+            $modSec->Config = $config->Installation->get('Vhost', array ());
 
             // create the view model for the vhost template
             $view = new ViewModel();
@@ -217,6 +233,11 @@ class BuildVirtualHost extends EventManager\AbstractListenerAggregate implements
                 }
                 else
                 {
+                    //render partials
+                    $view->setVariable('RewritePreRules', $renderer->render($rewritePreView));
+                    $view->setVariable('RewritePostRules', $renderer->render($rewritePostView));
+                    $view->setVariable('ModSecRules', $renderer->render($modSec));
+
                     fwrite($pointer, $renderer->render($view));
                     fclose($pointer);
 
