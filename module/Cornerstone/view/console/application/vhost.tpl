@@ -35,7 +35,7 @@
 <?php endif; ?>
   <IfModule mod_security2.c>
 
-    <?php echo $this->ModSecRules; ?>
+<?php echo $this->ModSecRules; ?>
 
   </IfModule>
 
@@ -58,7 +58,7 @@
 
     RewriteEngine On
 
-    <?php echo $this->RewritePreRules; ?>
+<?php echo $this->RewritePreRules; ?>
 
     # The following rule tells Apache that if the requested filename
     # exists, simply serve it.
@@ -82,7 +82,7 @@
     RewriteRule ^(.*) - [E=BASE:%1]
     RewriteRule ^(.*)$ %{ENV:BASE}index.php [NC,L]
 
-    <?php echo $this->RewritePostRules; ?>
+<?php echo $this->RewritePostRules; ?>
 
     <?php if ( false !== $this->CorsOrigin ) : ?>
     # allow cross origin resource sharing (CORS)
