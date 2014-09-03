@@ -2,10 +2,10 @@
 /**
  *
  * @author Oakensoul (http://www.oakensoul.com/)
- * @link https://github.com/oakensoul/Cornerstone for the canonical source repository
- * @copyright Copyright (c) 2013 Robert Gunnar Johnson Jr.
- * @license http://opensource.org/licenses/BSD-2-Clause BSD-2-Clause
- * @package Cornerstone
+ * @link      https://github.com/web-masons/Cornerstone for the canonical source repository
+ * @copyright Copyright (c) 2013, github.com/web-masons Contributors
+ * @license   http://opensource.org/licenses/Apache-2.0 Apache-2.0-Clause
+ * @package   Cornerstone
  */
 namespace Cornerstone\Console\Listener;
 
@@ -19,7 +19,6 @@ use Zend\View\Renderer\PhpRenderer;
 use Zend\Console\ColorInterface;
 use Zend\View\Model\ViewModel;
 use Zend\Console\Response;
-use Zend\Config\Config;
 
 class BuildVirtualHost extends EventManager\AbstractListenerAggregate implements ServiceManager\ServiceLocatorAwareInterface
 {
@@ -51,7 +50,6 @@ class BuildVirtualHost extends EventManager\AbstractListenerAggregate implements
             $console = $this->getServiceLocator()->get('console');
 
             $config = $this->getServiceLocator()->get('Config');
-            $config = new Config($config);
 
             if (true == $pEvent->getVerboseFlag())
             {
@@ -67,70 +65,57 @@ class BuildVirtualHost extends EventManager\AbstractListenerAggregate implements
 
             if (true == $pEvent->getVerboseFlag())
             {
-                $console->write("  [Template Key] ");
+                $console->write("    [Template Key] ");
                 $console->writeLine($this->mTemplateKey, ColorInterface::YELLOW);
             }
-
-            // Rewrite rule additions
-            $rewritePreView = new ViewModel();
-            $rewritePreView->setTemplate($this->mRewriteRulesPreTemplateKey);
-            $rewritePreView->Config = $config->Installation->get('Vhost', array ());
-
-            $rewritePostView = new ViewModel();
-            $rewritePostView->setTemplate($this->mRewriteRulesPostTemplateKey);
-            $rewritePostView->Config = $config->Installation->get('Vhost', array ());
-
-            $modSec = new ViewModel();
-            $modSec->setTemplate($this->mModsecTemplateKey);
-            $modSec->Config = $config->Installation->get('Vhost', array ());
 
             // create the view model for the vhost template
             $view = new ViewModel();
             $view->setTemplate($this->mTemplateKey);
 
-            $prefix = $config->Installation->Vhost->Server->get('Prefix', '');
-            $region = $config->Installation->Vhost->Server->get('Region', 'www.');
-            $domain = $config->Installation->Vhost->Server->get('Domain', 'cornerstone');
-            $suffix = $config->Installation->Vhost->Server->get('Suffix', '.com');
-            $view->ServerName = $prefix . $region . $domain . $suffix;
+            $vhost_config = isset($config['Installation']['Vhost']) ? $config['Installation']['Vhost'] : array();
+            $server = $vhost_config['Server'];
+            $prefix = $server['Prefix'];
+            $region = $server['Region'];
+            $domain = $server['Domain'];
+            $suffix = $server['Suffix'];
+            $view->setVariable('ServerName', $prefix . $region . $domain . $suffix);
 
-            $public = $config->Installation->Vhost->Server->get('PublicFolder', 'public');
-            $view->DocumentRoot = getcwd() . "/$public/";
-            $view->ApplicationEnv = $pEvent->getEnvironment();
-            $view->Config = $config->Installation->get('Vhost', array ());
+            $public = $server['PublicFolder'];
+
+            $view->setVariable('DocumentRoot', getcwd() . '/' . $public);
+            $view->setVariable('ApplicationEnv', $pEvent->getEnvironment());
+            $view->setVariable('Config', $vhost_config);
 
             if (true == $pEvent->getVerboseFlag())
             {
                 $console->write("   [Server Name] ");
-                $console->writeLine($view->ServerName, ColorInterface::YELLOW);
+                $console->writeLine($view->getVariable('ServerName'), ColorInterface::YELLOW);
 
                 $console->write(" [Document Root] ");
-                $console->writeLine($view->DocumentRoot, ColorInterface::YELLOW);
+                $console->writeLine($view->getVariable('DocumentRoot'), ColorInterface::YELLOW);
 
                 $console->write("   [Environment] ");
-                $console->writeLine($view->ApplicationEnv, ColorInterface::YELLOW);
+                $console->writeLine($view->getVariable('ApplicationEnv'), ColorInterface::YELLOW);
             }
 
             // setup specific configurations
-            $view->ApacheLogDir = $config->Installation->Vhost->get('ApacheLog', '${APACHE_LOG_DIR}');
-            $view->UseSyslog = $config->Installation->Vhost->get('UseSyslog', true);
+            $view->setVariable('ApacheLogDir', $vhost_config['ApacheLog']);
+            $view->setVariable('UseSyslog', $vhost_config['UseSysLog']);
+            $view->setVariable('Ports', $vhost_config['Ports']);
+            $view->setVariable('CorsOrigin', false);
 
-            $view->Ports = $config->Installation->Vhost->get('Ports', array ());
-
-            $view->CorsOrigin = false;
-            if ($config->Installation->get('CorsOrigin', false))
+            if ( array_key_exists('CorsOrigin', $config['Installation'] ) )
             {
-                $cors = $config->Installation->get('CorsOrigin', false);
+                $cors = $config['Installation']['CorsOrigin'];
 
-                if (is_object($cors))
-                {
-                    $origin_list = implode('|', $cors->toArray());
-                    $view->CorsOrigin = 'http(s)?://(' . $origin_list . ')';
-                }
-                else
+                if ( false === is_array($cors))
                 {
                     throw new Exception('CorsOrigin configuration must be an array.');
                 }
+
+                $origin_list = implode('|', $cors);
+                $view->setVariable('CorsOrigin', 'http(s)?://(' . $origin_list . ')');
             }
 
             /**
@@ -140,9 +125,25 @@ class BuildVirtualHost extends EventManager\AbstractListenerAggregate implements
              * template like an ordinary template, so that we can get back its
              * contents
              */
-            $map = new TemplateMapResolver($config->view_manager->template_map);
+            $map = new TemplateMapResolver($config['view_manager']['template_map']);
             $renderer = new PhpRenderer();
             $renderer->setResolver($map);
+
+            // setup view partials for rewrites and modsec
+            $rewritePreView = new ViewModel();
+            $rewritePreView->setTemplate($this->mRewriteRulesPreTemplateKey);
+            $rewritePreView->setVariable('Config', $vhost_config);
+            $view->setVariable('RewritePreRules', $renderer->render($rewritePreView));
+
+            $rewritePostView = new ViewModel();
+            $rewritePostView->setTemplate($this->mRewriteRulesPostTemplateKey);
+            $rewritePostView->setVariable('Config', $vhost_config);
+            $view->setVariable('RewritePostRules', $renderer->render($rewritePostView));
+
+            $modSec = new ViewModel();
+            $modSec->setTemplate($this->mModsecTemplateKey);
+            $modSec->setVariable('Config', $vhost_config);
+            $view->setVariable('ModSecRules', $renderer->render($modSec));
 
             if (true == $pEvent->getVerboseFlag())
             {
@@ -151,10 +152,10 @@ class BuildVirtualHost extends EventManager\AbstractListenerAggregate implements
             }
 
             // write the vhost file here....
-            $vhost_extension = $config->Installation->Vhost->get('Extension', 'vhost');
-            $vhost_path = $config->Installation->Vhost->get('Path', '/etc/apache2/sites-available/');
+            $vhost_extension = $server['Extension'];
+            $vhost_path = $server['Path'];
 
-            $vhost_filename = $region . $domain . '.com' . '.' . $vhost_extension;
+            $vhost_filename = $view->getVariable('ServerName') . '.' . $vhost_extension;
             $vhost_file = $vhost_path . $vhost_filename;
 
             if (true == $pEvent->getVerboseFlag())
@@ -163,31 +164,66 @@ class BuildVirtualHost extends EventManager\AbstractListenerAggregate implements
                 $console->writeLine($vhost_file, ColorInterface::YELLOW);
             }
 
+            if (false === is_dir($vhost_path))
+            {
+                $result = mkdir($vhost_path, 0775, true);
+
+                if (true === $result)
+                {
+                    if (true == $pEvent->getVerboseFlag())
+                    {
+                        $console->write("        [NOTICE] ", ColorInterface::LIGHT_CYAN);
+                        $console->writeLine("Vhost directory has been created.", ColorInterface::CYAN);
+                    }
+                }
+                else
+                {
+                    if (true == $pEvent->getVerboseFlag())
+                    {
+                        $console->write("       [Failure] ", ColorInterface::RED);
+                        $console->writeLine('Failed to create vhost directory, ' . $vhost_path . PHP_EOL, ColorInterface::RED);
+                    }
+
+                    throw new Exception('Failed to create vhost directory, ' . $vhost_path);
+                }
+            }
+
+            if (false === is_writable($vhost_path))
+            {
+                if (true == $pEvent->getVerboseFlag())
+                {
+                    $console->write("       [Failure] ", ColorInterface::RED);
+                    $console->writeLine("Vhost directory ($vhost_path) is not writable by web server." . PHP_EOL, ColorInterface::RED);
+                }
+
+                throw new Exception("Vhost directory ($vhost_path) is not writable by web server.");
+            }
+
             if (file_exists($vhost_file) && false === $pEvent->getForceFlag())
             {
                 if (true == $pEvent->getVerboseFlag())
                 {
                     $console->write("        [NOTICE] ", ColorInterface::LIGHT_CYAN);
                     $console->writeLine('Apache VHost file already exists, skipping creation.', ColorInterface::CYAN);
-
-                    $console->write("        [INFO] ", ColorInterface::LIGHT_CYAN);
+          
+                    $console->write("          [INFO] ", ColorInterface::LIGHT_CYAN);
                     $console->writeLine('To overwrite the existing file, use --force' . PHP_EOL, ColorInterface::CYAN);
                 }
             }
-            else
+            else if (file_exists($vhost_file) && false === is_writable($vhost_file))
             {
-                if (false === is_writable($vhost_path))
+                if (true == $pEvent->getVerboseFlag())
                 {
-                    if (true == $pEvent->getVerboseFlag())
-                    {
-                        $console->write("       [Failure] ", ColorInterface::RED);
-                        $console->writeLine('Apache VHost Not Writable!' . PHP_EOL, ColorInterface::RED);
-                    }
-
-                    throw new Exception(sprintf('Virtual host file %s is not writable.', $vhost_file));
+                    $console->write("       [Failure] ", ColorInterface::RED);
+                    $console->writeLine('Apache VHost Not Writable!' . PHP_EOL, ColorInterface::RED);
                 }
 
-                $pointer = fopen($vhost_file, 'w');
+                throw new Exception(sprintf('Virtual host file %s is not writable.', $vhost_file));
+            }
+            else
+            {
+
+                $pointer = fopen($vhost_file, 'w+');
                 if ($pointer === false)
                 {
                     if (true == $pEvent->getVerboseFlag())
@@ -200,26 +236,27 @@ class BuildVirtualHost extends EventManager\AbstractListenerAggregate implements
                 }
                 else
                 {
-                    $view->RewritePreRules = $renderer->render($rewritePreView);
-                    $view->RewritePostRules = $renderer->render($rewritePostView);
-                    $view->ModSecRules = $renderer->render($modSec);
-
                     fwrite($pointer, $renderer->render($view));
                     fclose($pointer);
 
                     if (true == $pEvent->getVerboseFlag())
                     {
-                        $console->write("       [Success] ", ColorInterface::LIGHT_GREEN);
+                        $console->write('       [Success] ', ColorInterface::LIGHT_GREEN);
                         $console->writeLine('VHost File Update Complete' . PHP_EOL, ColorInterface::YELLOW);
+
+                        /* adding some extra spacing for the notice outside of this if block */
+                        $console->write('        ');
                     }
 
                     $notice = $console->colorize('[NOTICE] ', ColorInterface::LIGHT_CYAN);
 
                     $response = new Response();
-                    $response->setContent($notice . ' Virtual Host file has been updated, you may need to restart/reload your web server.');
+                    $response->setContent($notice . 'Virtual Host file has been updated, you may need to restart/reload your web server.');
                     return $response;
                 }
             }
+
+            return NULL;
         }
         catch (Exception $e)
         {
@@ -233,7 +270,7 @@ class BuildVirtualHost extends EventManager\AbstractListenerAggregate implements
     /**
      * Set service locator
      *
-     * @param ServiceLocatorInterface $serviceLocator
+     * @param ServiceManager\ServiceLocatorInterface $serviceLocator
      */
     public function setServiceLocator (ServiceManager\ServiceLocatorInterface $serviceLocator)
     {
@@ -243,7 +280,7 @@ class BuildVirtualHost extends EventManager\AbstractListenerAggregate implements
     /**
      * Get service locator
      *
-     * @return ServiceLocatorInterface
+     * @return ServiceManager\ServiceLocatorInterface
      */
     public function getServiceLocator ()
     {

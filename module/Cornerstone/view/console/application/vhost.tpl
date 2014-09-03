@@ -19,6 +19,11 @@
 <?php endif; ?>
 <VirtualHost *:<?php echo $host['Port']; ?>>
   ServerName <?php echo $this->ServerName . PHP_EOL; ?>
+<?php if( isset($this->Config['Aliases']) && (is_array($this->Config['Aliases']) || $this->Config['Aliases'] instanceof \Zend\Config\Config ) ) : ?>
+<?php foreach ( $this->Config['Aliases'] as $alias ) : ?>
+  ServerAlias <?php echo $alias . PHP_EOL; ?>
+<?php endforeach; ?>
+<?php endif; ?>
   DocumentRoot <?php echo $this->DocumentRoot . PHP_EOL; ?>
   SetEnv APPLICATION_ENV "<?php echo $this->ApplicationEnv; ?>"
 
@@ -33,7 +38,6 @@
     <?php echo $this->ModSecRules; ?>
 
   </IfModule>
-
 
   # add MIME encoding for web fonts
   AddType application/vnd.ms-fontobject .eot
@@ -85,10 +89,11 @@
     <IfModule mod_headers.c>
       SetEnvIf Origin "<?php echo $this->CorsOrigin; ?>" AccessControlAllowOrigin=$0
       Header add Access-Control-Allow-Origin %{AccessControlAllowOrigin}e env=AccessControlAllowOrigin
+
+      Header set Access-Control-Allow-Credentials "true"
+      Header set Access-Control-Allow-Methods: "GET,POST,OPTIONS,DELETE,PUT"
     </IfModule>
 
-    Header set Access-Control-Allow-Credentials "true"
-    Header set Access-Control-Allow-Methods: "GET,POST,OPTIONS,DELETE,PUT"
 <?php endif;?>
   </Directory>
 </VirtualHost>
