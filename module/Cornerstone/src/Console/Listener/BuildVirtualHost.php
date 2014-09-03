@@ -65,7 +65,7 @@ class BuildVirtualHost extends EventManager\AbstractListenerAggregate implements
 
             if (true == $pEvent->getVerboseFlag())
             {
-                $console->write("    [Template Key] ");
+                $console->write("  [Template Key] ");
                 $console->writeLine($this->mTemplateKey, ColorInterface::YELLOW);
             }
 
@@ -205,7 +205,7 @@ class BuildVirtualHost extends EventManager\AbstractListenerAggregate implements
                 {
                     $console->write("        [NOTICE] ", ColorInterface::LIGHT_CYAN);
                     $console->writeLine('Apache VHost file already exists, skipping creation.', ColorInterface::CYAN);
-          
+
                     $console->write("          [INFO] ", ColorInterface::LIGHT_CYAN);
                     $console->writeLine('To overwrite the existing file, use --force' . PHP_EOL, ColorInterface::CYAN);
                 }
