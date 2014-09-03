@@ -1,0 +1,1 @@
+var baseUrl = "<?php echo $this->fullUrl; ?>";
