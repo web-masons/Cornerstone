@@ -58,7 +58,7 @@ class BuildVirtualHost extends EventManager\AbstractListenerAggregate implements
                 $console->write(' --------------- ', ColorInterface::LIGHT_GREEN);
                 $console->writeLine('-----------------------------------------------------------', ColorInterface::YELLOW);
 
-                $console->write("            [Listener] ", ColorInterface::LIGHT_GREEN);
+                $console->write("      [Listener] ", ColorInterface::LIGHT_GREEN);
                 $console->writeLine(__CLASS__, ColorInterface::YELLOW);
 
                 $console->write(' --------------- ', ColorInterface::LIGHT_GREEN);
@@ -67,7 +67,7 @@ class BuildVirtualHost extends EventManager\AbstractListenerAggregate implements
 
             if (true == $pEvent->getVerboseFlag())
             {
-                $console->write("    [Template Key] ");
+                $console->write("  [Template Key] ");
                 $console->writeLine($this->mTemplateKey, ColorInterface::YELLOW);
             }
 
@@ -101,13 +101,13 @@ class BuildVirtualHost extends EventManager\AbstractListenerAggregate implements
 
             if (true == $pEvent->getVerboseFlag())
             {
-                $console->write("     [Server Name] ");
+                $console->write("   [Server Name] ");
                 $console->writeLine($view->ServerName, ColorInterface::YELLOW);
 
                 $console->write(" [Document Root] ");
                 $console->writeLine($view->DocumentRoot, ColorInterface::YELLOW);
 
-                $console->write("     [Environment] ");
+                $console->write("   [Environment] ");
                 $console->writeLine($view->ApplicationEnv, ColorInterface::YELLOW);
             }
 
@@ -159,7 +159,7 @@ class BuildVirtualHost extends EventManager\AbstractListenerAggregate implements
 
             if (true == $pEvent->getVerboseFlag())
             {
-                $console->write("    [Apache VHost] ");
+                $console->write("  [Apache VHost] ");
                 $console->writeLine($vhost_file, ColorInterface::YELLOW);
             }
 
@@ -167,10 +167,10 @@ class BuildVirtualHost extends EventManager\AbstractListenerAggregate implements
             {
                 if (true == $pEvent->getVerboseFlag())
                 {
-                    $console->write("                [NOTICE] ", ColorInterface::LIGHT_CYAN);
+                    $console->write("        [NOTICE] ", ColorInterface::LIGHT_CYAN);
                     $console->writeLine('Apache VHost file already exists, skipping creation.', ColorInterface::CYAN);
 
-                    $console->write("                    [INFO] ", ColorInterface::LIGHT_CYAN);
+                    $console->write("        [INFO] ", ColorInterface::LIGHT_CYAN);
                     $console->writeLine('To overwrite the existing file, use --force' . PHP_EOL, ColorInterface::CYAN);
                 }
             }
@@ -180,7 +180,7 @@ class BuildVirtualHost extends EventManager\AbstractListenerAggregate implements
                 {
                     if (true == $pEvent->getVerboseFlag())
                     {
-                        $console->write("             [Failure] ", ColorInterface::RED);
+                        $console->write("       [Failure] ", ColorInterface::RED);
                         $console->writeLine('Apache VHost Not Writable!' . PHP_EOL, ColorInterface::RED);
                     }
 
@@ -192,7 +192,7 @@ class BuildVirtualHost extends EventManager\AbstractListenerAggregate implements
                 {
                     if (true == $pEvent->getVerboseFlag())
                     {
-                        $console->write("             [Failure] ", ColorInterface::RED);
+                        $console->write("       [Failure] ", ColorInterface::RED);
                         $console->writeLine('Failed to open Apache VHost for writing!' . PHP_EOL, ColorInterface::RED);
                     }
 
@@ -209,7 +209,7 @@ class BuildVirtualHost extends EventManager\AbstractListenerAggregate implements
 
                     if (true == $pEvent->getVerboseFlag())
                     {
-                        $console->write("             [Success] ", ColorInterface::LIGHT_GREEN);
+                        $console->write("       [Success] ", ColorInterface::LIGHT_GREEN);
                         $console->writeLine('VHost File Update Complete' . PHP_EOL, ColorInterface::YELLOW);
                     }
 
