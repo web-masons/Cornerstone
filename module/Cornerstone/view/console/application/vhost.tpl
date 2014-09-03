@@ -81,7 +81,7 @@
     RewriteCond %{REQUEST_URI}::$1 ^(/.+)(.+)::\2$
     RewriteRule ^(.*) - [E=BASE:%1]
     RewriteRule ^(.*)$ %{ENV:BASE}index.php [NC,L]
-  
+
     <?php echo $this->RewritePostRules; ?>
 
     <?php if ( false !== $this->CorsOrigin ) : ?>
@@ -96,8 +96,8 @@
 
     <?php endif;?>
   </Directory>
-  </VirtualHost>
-  <?php if ( 'https' == $host['Scheme'] ) : ?>
+</VirtualHost>
+<?php if ( 'https' == $host['Scheme'] ) : ?>
 </IfModule>
 <?php endif; ?>
 <?php endforeach; ?>
