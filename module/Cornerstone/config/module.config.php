@@ -116,6 +116,7 @@ $view_manager = array(
         'application/index/index' => __DIR__ . '/../view/application/index/index.phtml',
         'error/404' => __DIR__ . '/../view/error/404.phtml',
         'error/index' => __DIR__ . '/../view/error/index.phtml',
+        'casper/casper' => __DIR__ . '/../view/console/casper/casper.tpl',
         'application/vhost' => __DIR__ . '/../view/console/application/vhost.tpl',
         'application/vhost/rewrite/rules/pre' => __DIR__ . '/../view/console/application/partials/rewrite-pre-rules.phtml',
         'application/vhost/rewrite/rules/post' => __DIR__ . '/../view/console/application/partials/rewrite-post-rules.phtml',
@@ -196,7 +197,19 @@ $console = array(
                         'installer-route' => true
                     )
                 )
-            )
+            ),
+
+            'application-casper-configuration' => array(
+                'options' => array(
+                    'route' => 'application casper-configuration --env= [--force] [--verbose]',
+                    'defaults' => array(
+                        'controller' => 'Console\Controller\Application',
+                        'action' => 'event',
+                        'event' => Cornerstone\EventManager\Service::EVENT_APPLICATION_CASPER,
+                        'installer-route' => true
+                    )
+                )
+            ),
         )
     )
 );

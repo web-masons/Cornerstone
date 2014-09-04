@@ -19,4 +19,5 @@ class Service extends EventManager\EventManager
     const EVENT_APPLICATION_CACHE_INIT = 'ApplicationCacheInit';
     const EVENT_APPLICATION_CACHE_EMPTY = 'ApplicationCacheEmpty';
     const EVENT_APPLICATION_BUILD_VHOST = 'ApplicationBuildVhost';
+    const EVENT_APPLICATION_CASPER = 'ApplicationCasper';
 }

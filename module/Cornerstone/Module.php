@@ -53,6 +53,7 @@ class Module implements ConsoleUsageProviderInterface, AutoloaderProviderInterfa
         $service_manager->get('Console\BuildVirtualHostStrategy')->attach($cornerstone_event_manager);
         $service_manager->get('Console\ApplicationCacheInitStrategy')->attach($cornerstone_event_manager);
         $service_manager->get('Console\ApplicationCacheEmptyStrategy')->attach($cornerstone_event_manager);
+        $service_manager->get('Console\CasperConfigurationStrategy')->attach($cornerstone_event_manager);
     }
 
     public function getConfig ()
@@ -127,6 +128,7 @@ class Module implements ConsoleUsageProviderInterface, AutoloaderProviderInterfa
         $invokables['Console\ApplicationCacheInitStrategy'] = 'Cornerstone\Console\Listener\ApplicationCacheInit';
         $invokables['Console\ApplicationCacheEmptyStrategy'] = 'Cornerstone\Console\Listener\ApplicationCacheEmpty';
         $invokables['Console\InitializeApplicationStrategy'] = 'Cornerstone\Console\Listener\InitializeApplication';
+        $invokables['Console\CasperConfigurationStrategy'] = 'Cornerstone\Console\Listener\CasperConfiguration';
 
         $service_config = array (
             'factories' => $factories,
