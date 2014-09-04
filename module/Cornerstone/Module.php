@@ -42,6 +42,9 @@ class Module implements ConsoleUsageProviderInterface, AutoloaderProviderInterfa
         /* the exception logger strategy dumps exception messages to the log before ZF2 gets it and swallows it */
         $service_manager->get('Http\ExceptionLoggerStrategy')->attach($event_manager);
 
+        /* the layout strategy handles overriding the layout for specific routes */
+        $service_manager->get('Http\LayoutStrategy')->attach($event_manager);
+
         /* Cornerstone Application Event Manager */
         $cornerstone_event_manager = $service_manager->get('Application\EventManager');
 
@@ -117,6 +120,7 @@ class Module implements ConsoleUsageProviderInterface, AutoloaderProviderInterfa
         $invokables['Http\SchemeStrategy'] = 'Cornerstone\Http\Listener\Scheme';
         $invokables['Http\ThemeStrategy'] = 'Cornerstone\Http\Listener\Theme';
         $invokables['Http\ExceptionLoggerStrategy'] = 'Cornerstone\Http\Listener\ExceptionLogger';
+        $invokables['Http\LayoutStrategy'] = 'Cornerstone\Http\Listener\Layout';
 
         $invokables['Application\EventManager'] = 'Cornerstone\EventManager\Service';
 

@@ -34,7 +34,8 @@ $router = array(
                     'action' => 'index',
                     'force_localized_route' => false,
                     'force_https_scheme' => false,
-                    'theme' => 'default'
+                    'theme' => 'default',
+                    'layout'=> 'layout/layout'
                 ),
                 'constraints' => array(
                     'lang' => '(en|fr|it|de|es)'
@@ -116,7 +117,10 @@ $view_manager = array(
         'error/404' => __DIR__ . '/../view/error/404.phtml',
         'error/index' => __DIR__ . '/../view/error/index.phtml',
         'casper/casper' => __DIR__ . '/../view/console/casper/casper.tpl',
-        'application/vhost' => __DIR__ . '/../view/console/application/vhost.tpl'
+        'application/vhost' => __DIR__ . '/../view/console/application/vhost.tpl',
+        'application/vhost/rewrite/rules/pre' => __DIR__ . '/../view/console/application/partials/rewrite-pre-rules.phtml',
+        'application/vhost/rewrite/rules/post' => __DIR__ . '/../view/console/application/partials/rewrite-post-rules.phtml',
+        'application/vhost/modsec' => __DIR__ . '/../view/console/application/partials/modsec-rules.phtml',
     ),
     'template_path_stack' => array(
         __DIR__ . '/../view'
