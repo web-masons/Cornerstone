@@ -34,7 +34,8 @@ $router = array(
                     'action' => 'index',
                     'force_localized_route' => false,
                     'force_https_scheme' => false,
-                    'theme' => 'default'
+                    'theme' => 'default',
+                    'layout'=> 'layout/layout'
                 ),
                 'constraints' => array(
                     'lang' => '(en|fr|it|de|es)'
