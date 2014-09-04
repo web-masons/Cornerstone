@@ -24,6 +24,9 @@ class BuildVirtualHost extends EventManager\AbstractListenerAggregate implements
 {
 
     protected $mTemplateKey = 'application/vhost';
+    protected $mRewriteRulesPreTemplateKey = 'application/vhost/rewrite/rules/pre';
+    protected $mRewriteRulesPostTemplateKey = 'application/vhost/rewrite/rules/post';
+    protected $mModsecTemplateKey = 'application/vhost/modsec';
 
     protected $mServiceLocator;
 
@@ -126,7 +129,23 @@ class BuildVirtualHost extends EventManager\AbstractListenerAggregate implements
             $renderer = new PhpRenderer();
             $renderer->setResolver($map);
 
-            if (true == $pEvent->getVerboseFlag())
+            // Rewrite/modsec rule additions
+            $rewritePreView = new ViewModel();
+            $rewritePreView->setTemplate($this->mRewriteRulesPreTemplateKey);
+            $rewritePreView->setVariable('Config', $vhost_config);
+            $view->setVariable('RewritePreRules', $renderer->render($rewritePreView));
+
+            $rewritePostView = new ViewModel();
+            $rewritePostView->setTemplate($this->mRewriteRulesPostTemplateKey);
+            $rewritePostView->setVariable('Config', $vhost_config);
+            $view->setVariable('RewritePostRules', $renderer->render($rewritePostView));
+
+            $modSec = new ViewModel();
+            $modSec->setTemplate($this->mModsecTemplateKey);
+            $modSec->setVariable('Config', $vhost_config);
+            $view->setVariable('ModSecRules', $renderer->render($modSec));
+
+          if (true == $pEvent->getVerboseFlag())
             {
                 $console->write(" [View Template] ");
                 $console->writeLine(realpath($map->get($this->mTemplateKey)), ColorInterface::YELLOW);

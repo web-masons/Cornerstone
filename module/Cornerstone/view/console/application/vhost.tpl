@@ -19,6 +19,11 @@
 <?php endif; ?>
 <VirtualHost *:<?php echo $host['Port']; ?>>
   ServerName <?php echo $this->ServerName . PHP_EOL; ?>
+  <?php if( isset($this->Config['Aliases']) && (is_array($this->Config['Aliases']) || $this->Config['Aliases'] instanceof \Zend\Config\Config ) ) : ?>
+  <?php foreach ( $this->Config['Aliases'] as $alias ) : ?>
+  ServerAlias <?php echo $alias . PHP_EOL; ?>
+  <?php endforeach; ?>
+  <?php endif; ?>
   DocumentRoot <?php echo $this->DocumentRoot . PHP_EOL; ?>
   SetEnv APPLICATION_ENV "<?php echo $this->ApplicationEnv; ?>"
 
@@ -28,10 +33,10 @@
   SSLCertificateKeyFile <?php echo $host['SSLKey'] . PHP_EOL; ?>
 
 <?php endif; ?>
-  <IfModule mod_security.c>
-    <LocationMatch .*>
-      SecRuleEngine DetectionOnly
-    </LocationMatch>
+  <IfModule mod_security2.c>
+
+<?php echo $this->ModSecRules; ?>
+
   </IfModule>
 
   # add MIME encoding for web fonts
@@ -53,12 +58,19 @@
 
     RewriteEngine On
 
+<?php echo $this->RewritePreRules; ?>
+
     # The following rule tells Apache that if the requested filename
     # exists, simply serve it.
     RewriteCond %{REQUEST_FILENAME} -s [OR]
     RewriteCond %{REQUEST_FILENAME} -l [OR]
     RewriteCond %{REQUEST_FILENAME} -d
     RewriteRule ^.*$ - [NC,L]
+
+    <?php if (isset($this->Config['StripTrailingSlash']) && $this->Config['StripTrailingSlash'] === true) : ?>
+    # Remove trailing slash from URL
+    RewriteRule ^(.+)/$  /$1 [R=301,L]
+    <?php endif; ?>
 
     # The following rewrites all other queries to index.php. The
     # condition ensures that if you are using Apache aliases to do
@@ -70,16 +82,19 @@
     RewriteRule ^(.*) - [E=BASE:%1]
     RewriteRule ^(.*)$ %{ENV:BASE}index.php [NC,L]
 
-<?php if ( false !== $this->CorsOrigin ) : ?>
+<?php echo $this->RewritePostRules; ?>
+
+    <?php if ( false !== $this->CorsOrigin ) : ?>
     # allow cross origin resource sharing (CORS)
     <IfModule mod_headers.c>
       SetEnvIf Origin "<?php echo $this->CorsOrigin; ?>" AccessControlAllowOrigin=$0
       Header add Access-Control-Allow-Origin %{AccessControlAllowOrigin}e env=AccessControlAllowOrigin
+
+      Header set Access-Control-Allow-Credentials "true"
+      Header set Access-Control-Allow-Methods: "GET,POST,OPTIONS,DELETE,PUT"
     </IfModule>
 
-    Header set Access-Control-Allow-Credentials "true"
-    Header set Access-Control-Allow-Methods: "GET,POST,OPTIONS,DELETE,PUT"
-<?php endif;?>
+    <?php endif;?>
   </Directory>
 </VirtualHost>
 <?php if ( 'https' == $host['Scheme'] ) : ?>

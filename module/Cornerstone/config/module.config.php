@@ -116,7 +116,10 @@ $view_manager = array(
         'application/index/index' => __DIR__ . '/../view/application/index/index.phtml',
         'error/404' => __DIR__ . '/../view/error/404.phtml',
         'error/index' => __DIR__ . '/../view/error/index.phtml',
-        'application/vhost' => __DIR__ . '/../view/console/application/vhost.tpl'
+        'application/vhost' => __DIR__ . '/../view/console/application/vhost.tpl',
+        'application/vhost/rewrite/rules/pre' => __DIR__ . '/../view/console/application/partials/rewrite-pre-rules.phtml',
+        'application/vhost/rewrite/rules/post' => __DIR__ . '/../view/console/application/partials/rewrite-post-rules.phtml',
+        'application/vhost/modsec' => __DIR__ . '/../view/console/application/partials/modsec-rules.phtml',
     ),
     'template_path_stack' => array(
         __DIR__ . '/../view'
