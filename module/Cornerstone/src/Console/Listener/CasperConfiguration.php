@@ -20,11 +20,7 @@ class CasperConfiguration extends EventManager\AbstractListenerAggregate impleme
 {
   const TEMPLATE_NAME = 'casper/casper';
   const FILE_NAME = '.casperjsrc.js';
-  
-  const DEFAULT_PREFIX = '';
-  const DEFAULT_REGION = 'www.';
-  const DEFAULT_DOMAIN = 'cornerstone';
-  const DEFAULT_SUFFIX = '.com';
+
   const DEFAULT_PROTOCOL = 'http://';
   
   protected $mServiceLocator;
@@ -95,10 +91,10 @@ class CasperConfiguration extends EventManager\AbstractListenerAggregate impleme
   {
     $fullUrlPath = '';
     
-    $prefix = $this->mConfig->Installation->Vhost->Server->get('Prefix', static::DEFAULT_PREFIX);
-    $region = $this->mConfig->Installation->Vhost->Server->get('Region', static::DEFAULT_REGION);
-    $domain = $this->mConfig->Installation->Vhost->Server->get('Domain', static::DEFAULT_DOMAIN);
-    $suffix = $this->mConfig->Installation->Vhost->Server->get('Suffix', static::DEFAULT_SUFFIX);
+    $prefix = $this->mConfig->Installation->Vhost->Server->get('Prefix', '');
+    $region = $this->mConfig->Installation->Vhost->Server->get('Region', '');
+    $domain = $this->mConfig->Installation->Vhost->Server->get('Domain', '');
+    $suffix = $this->mConfig->Installation->Vhost->Server->get('Suffix', '');
     $fullUrlPath = static::DEFAULT_PROTOCOL . $prefix . $region . $domain . $suffix . '/';
     
     return $fullUrlPath;
